@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -42,14 +41,6 @@ func postAlbums(c *gin.Context) {
 // parameter sent by the client, then returns that album as a response.
 func getAlbumByID(c *gin.Context) {
 	id := c.Param("id")
-
-	var variable1 = "sadf"
-	variable2 := "adf"
-	var variable3 string
-	var variable4 int8 = 98
-	myvar1, myvar2, myvar3 := 800, "Geeks", 47.56
-
-	fmt.Printf(variable3, variable4, variable2, variable1, myvar1, myvar2, myvar3)
 
 	// Loop over the list of albums, looking for
 	// an album whose ID value matches the parameter.
