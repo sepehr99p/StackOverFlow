@@ -33,6 +33,13 @@ func main() {
 
 	// variadic func call
 	fmt.Println("Sum of 1, 2, 3:", sum(1, 2, 3))
+
+	//In Go language,
+	//defer statements delay the execution of the function or method or an anonymous method until the nearby functions returns.
+	// they are executed in LIFO(Last-In, First-Out)
+	defer fmt.Println("End")
+	defer sum(34, 56)
+	defer sum(10, 10)
 }
 
 // Variadic function to calculate sum
