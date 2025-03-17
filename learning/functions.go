@@ -31,4 +31,15 @@ func main() {
 	fmt.Printf("multiplication: %d\n", refResult)
 	fmt.Printf("After: x = %d, y = %d\n", firstNum, secondNum)
 
+	// variadic func call
+	fmt.Println("Sum of 1, 2, 3:", sum(1, 2, 3))
+}
+
+// Variadic function to calculate sum
+func sum(nums ...int) int {
+	total := 0
+	for _, n := range nums {
+		total += n
+	}
+	return total
 }
