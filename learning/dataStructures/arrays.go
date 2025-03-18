@@ -1,4 +1,4 @@
-package learning
+package dataStructures
 
 import "fmt"
 
