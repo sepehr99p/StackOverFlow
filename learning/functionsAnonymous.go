@@ -2,7 +2,7 @@ package learning
 
 import "fmt"
 
-func main() {
+func init() {
 	// Anonymous function
 	func() {
 		fmt.Println("Welcome! to GeeksforGeeks")
