@@ -1,4 +1,4 @@
-package learning
+package _func
 
 import "fmt"
 

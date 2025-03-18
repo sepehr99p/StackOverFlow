@@ -1,4 +1,4 @@
-package learning
+package basics
 
 import "fmt"
 
