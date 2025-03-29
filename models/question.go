@@ -6,6 +6,7 @@ type Question struct {
 	TagId       int      `json:"tag_idz"`
 	Description string   `json:"description"`
 	Votes       int      `json:"votes"`
+	Date        string   `json:"date"`
 	Answers     []Answer `json:"answers"`
 }
 
