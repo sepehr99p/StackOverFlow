@@ -9,4 +9,7 @@ type Answer struct {
 	Votes       int    `json:"votes"`
 }
 
+type Comment struct {
+}
+
 var mockAnswer = Answer{UserId: 234, Description: "some answer description", Votes: 44, Date: "2025"}

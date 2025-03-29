@@ -19,7 +19,12 @@ func main() {
 
 	router := gin.Default()
 	router.GET("/questions/:id", fetchQuestionById)
-	router.GET("/questions", fetchQuestions)
+	router.GET("/questions/all", fetchQuestions)
+	router.GET("/questions/my", fetchMyQuestions)
+	//router.POST("/questions/delete")
+	//router.POST("question/add")
+	//router.POST("answer/add")
+	//router.POST("answer/delete")
 	router.Run("localhost:8080")
 }
 
@@ -34,6 +39,10 @@ func fetchQuestionById(c *gin.Context) {
 }
 
 func fetchQuestions(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, mockQuestions)
+}
+
+func fetchMyQuestions(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, mockQuestions)
 }
 
