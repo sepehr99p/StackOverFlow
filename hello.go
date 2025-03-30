@@ -20,14 +20,16 @@ var mockAnswer = models.Answer{UserId: 234, Description: "some answer descriptio
 
 var mockQuestions = []models.Question{mockQuestion, mockQuestion, mockQuestion}
 
+var database *gorm.DB
+
 func main() {
 	//connectDatabase()
-	connectDatabaseGorm()
+	database = connectDatabaseGorm()
 
 	router := gin.Default()
 	router.GET("/questions/:id", fetchQuestionById)
 	router.GET("/questions/all", fetchQuestions)
-	router.GET("/questions/my", fetchMyQuestions)
+	router.GET("/questions/my/:user_id", fetchMyQuestions)
 	//router.POST("/questions/delete")
 	//router.POST("question/add")
 	//router.POST("answer/add")
@@ -36,20 +38,33 @@ func main() {
 }
 
 func fetchQuestionById(c *gin.Context) {
-	id := c.Param("id")
-	for _, question := range mockQuestions {
-		if id == strconv.FormatInt(question.QuestionId, 10) {
-			c.IndentedJSON(http.StatusOK, question)
-		}
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	var questionToFind = models.Question{QuestionId: id}
+	result := database.First(&questionToFind)
+
+	result.Error.Error()
+
+	if questionToFind.QuestionId == id {
+		c.IndentedJSON(http.StatusOK, questionToFind)
 	}
 	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "no question found"})
 }
 
 func fetchQuestions(c *gin.Context) {
+	result := database.First(models.Question{})
+
+	result.Error.Error()
 	c.IndentedJSON(http.StatusOK, mockQuestions)
 }
 
 func fetchMyQuestions(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)
+
+	if id == 0 {
+
+	}
+
 	c.IndentedJSON(http.StatusOK, mockQuestions)
 }
 
