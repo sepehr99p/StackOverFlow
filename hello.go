@@ -11,7 +11,14 @@ import (
 	"strconv"
 )
 
-var mockQuestions []models.Question
+var mockQuestion = models.Question{
+	UserId: 123, Description: "some description", Votes: 33, Answers: []*models.Answer{&mockAnswer, &mockAnswer}, TagId: 33,
+	QuestionId: 33,
+}
+
+var mockAnswer = models.Answer{UserId: 234, Description: "some answer description", Votes: 44}
+
+var mockQuestions = []models.Question{mockQuestion, mockQuestion, mockQuestion}
 
 func main() {
 	//connectDatabase()
@@ -46,13 +53,6 @@ func fetchMyQuestions(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, mockQuestions)
 }
 
-var mockQuestion = models.Question{
-	UserId: 123, Description: "some description", Votes: 33, Answers: []models.Answer{mockAnswer, mockAnswer}, TagId: 33,
-	QuestionId: 33,
-}
-
-var mockAnswer = models.Answer{UserId: 234, Description: "some answer description", Votes: 44}
-
 func connectDatabaseGorm() *gorm.DB {
 	//dsn := "root:test@tcp(127.0.0.1:3306)/stackoverflow?charset=utf8mb4&parseTime=True&loc=Local"
 	//db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -69,9 +69,11 @@ func connectDatabaseGorm() *gorm.DB {
 		Conn: sqlDB,
 	}), &gorm.Config{})
 
-	result := gormDB.Create(&mockQuestion)
+	result := gormDB.Create(&mockQuestions)
 
 	result.Error.Error()
+
+	gormDB.Select("SELECT * ")
 
 	return gormDB
 	//return db
