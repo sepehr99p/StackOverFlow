@@ -40,20 +40,17 @@ func main() {
 func postQuestion(c *gin.Context) {
 	var question models.Question
 
-	// Bind JSON request body to struct
 	if err := c.ShouldBindJSON(&question); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
 		return
 	}
 
-	// 🔍 Check if user exists
 	var user models.User
 	if err := database.First(&user, question.UserId).Error; err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "User does not exist", "error": err.Error()})
 		return
 	}
 
-	// Insert question
 	result := database.Create(&question)
 	if result.Error != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating question", "error": result.Error.Error()})
@@ -65,13 +62,11 @@ func postQuestion(c *gin.Context) {
 
 func addUser(c *gin.Context) {
 	var user models.User
-	// Bind JSON request body to struct
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
 		return
 	}
 
-	// Insert question
 	result := database.Create(&user)
 	if result.Error != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating user", "error": result.Error.Error()})
@@ -101,14 +96,12 @@ func fetchQuestions(c *gin.Context) {
 	var questions []models.Question
 	result := database.Find(&questions)
 
-	// Log the error to see what's causing the 500 error
 	if result.Error != nil {
 		log.Println("Error fetching questions:", result.Error)
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving questions"})
 		return
 	}
 
-	// Check if no questions were found
 	if len(questions) == 0 {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "No questions found"})
 		return
@@ -122,7 +115,6 @@ func fetchMyQuestions(c *gin.Context) {
 	var userToFind = models.User{UserId: int(id)}
 	var questions []models.Question
 
-	// FIX: Pass &questions instead of questions
 	result := database.Model(&userToFind).Where("user_id = ?", id).Find(&questions)
 
 	if result.Error != nil {
@@ -153,18 +145,17 @@ func connectDatabaseGorm() *gorm.DB {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
 
-	// 🔥 MIGRATE TABLES IN THE CORRECT ORDER 🔥
-	err = gormDB.AutoMigrate(&models.User{}) // User first
+	err = gormDB.AutoMigrate(&models.User{})
 	if err != nil {
 		log.Fatalf("Migration failed (User): %v", err)
 	}
 
-	err = gormDB.AutoMigrate(&models.Question{}) // Then Question
+	err = gormDB.AutoMigrate(&models.Question{})
 	if err != nil {
 		log.Fatalf("Migration failed (Question): %v", err)
 	}
 
-	err = gormDB.AutoMigrate(&models.Answer{}) // Then other tables
+	err = gormDB.AutoMigrate(&models.Answer{})
 	if err != nil {
 		log.Fatalf("Migration failed (Other tables): %v", err)
 	}
@@ -173,13 +164,13 @@ func connectDatabaseGorm() *gorm.DB {
 	return gormDB
 }
 
-//curl http://localhost:8080/question/add \
+//curl http://localhost:8080/questions/add \
 //--include \
 //--header "Content-Type: application/json" \
 //--request "POST" \
 //--data '{"question_id": 4,"user_id": 33,"tag_idz": 22,"description": "des","votes":33}'
 
-//curl http://localhost:8080/question/add \
+//curl http://localhost:8080/user/add \
 //--include \
 //--header "Content-Type: application/json" \
 //--request "POST" \
