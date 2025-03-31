@@ -16,7 +16,7 @@ func AddTag(c *gin.Context) {
 
 	result := database.DB.Create(&tag)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "error creating tag", "error": result.Error.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "error creating tag", "error": result.Error.Error()})
 		return
 	}
 
