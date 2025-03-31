@@ -23,6 +23,7 @@ func main() {
 	router.GET("/questions/:id", fetchQuestionById)
 	router.GET("/questions/all", fetchQuestions)
 	router.GET("/questions/my/:user_id", fetchMyQuestions)
+	router.POST("/questions/add", postQuestion)
 
 	log.Println("Server running on localhost:8080")
 	err := router.Run("localhost:8080")
@@ -30,9 +31,35 @@ func main() {
 		log.Fatal("Failed to start server:", err)
 	}
 	//router.POST("/questions/delete")
-	//router.POST("question/add")
-	//router.POST("answer/add")
+
+	//router.POST("answer/add",)
 	//router.POST("answer/delete")
+}
+
+func postQuestion(c *gin.Context) {
+	var question models.Question
+
+	// Bind JSON request body to struct
+	if err := c.ShouldBindJSON(&question); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		return
+	}
+
+	// 🔍 Check if user exists
+	var user models.User
+	if err := database.First(&user, question.UserId).Error; err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "User does not exist", "error": err.Error()})
+		return
+	}
+
+	// Insert question
+	result := database.Create(&question)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating question", "error": result.Error.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusCreated, question)
 }
 
 func fetchQuestionById(c *gin.Context) {
@@ -126,3 +153,9 @@ func connectDatabaseGorm() *gorm.DB {
 	log.Println("Database migration successful!")
 	return gormDB
 }
+
+//curl http://localhost:8080/question/add \
+//--include \
+//--header "Content-Type: application/json" \
+//--request "POST" \
+//--data '{"question_id": 4,"user_id": 33,"tag_idz": 22,"description": "des","votes":33}'
