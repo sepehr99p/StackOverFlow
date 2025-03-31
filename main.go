@@ -24,6 +24,7 @@ func main() {
 	router.GET("/questions/all", fetchQuestions)
 	router.GET("/questions/my/:user_id", fetchMyQuestions)
 	router.POST("/questions/add", postQuestion)
+	router.POST("/user/add", addUser)
 
 	log.Println("Server running on localhost:8080")
 	err := router.Run("localhost:8080")
@@ -60,6 +61,24 @@ func postQuestion(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusCreated, question)
+}
+
+func addUser(c *gin.Context) {
+	var user models.User
+	// Bind JSON request body to struct
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		return
+	}
+
+	// Insert question
+	result := database.Create(&user)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating user", "error": result.Error.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusCreated, user)
 }
 
 func fetchQuestionById(c *gin.Context) {
@@ -159,3 +178,9 @@ func connectDatabaseGorm() *gorm.DB {
 //--header "Content-Type: application/json" \
 //--request "POST" \
 //--data '{"question_id": 4,"user_id": 33,"tag_idz": 22,"description": "des","votes":33}'
+
+//curl http://localhost:8080/question/add \
+//--include \
+//--header "Content-Type: application/json" \
+//--request "POST" \
+//--data '{"user_name": "sepehr","user_id": 33,"reputation": 22}'
