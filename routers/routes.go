@@ -17,6 +17,7 @@ func SetupRouter() *gin.Engine {
 
 	// User routes
 	router.POST("/user/add", handlers.AddUser)
+	router.DELETE("/user/delete", handlers.DeleteUser)
 
 	// Answer routes
 	router.POST("/answer/add", handlers.AddAnswer)
