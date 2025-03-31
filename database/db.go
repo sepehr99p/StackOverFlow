@@ -28,7 +28,7 @@ func ConnectDatabase() {
 	}
 
 	// Perform migrations
-	err = gormDB.AutoMigrate(&models.User{}, &models.Question{}, &models.Answer{})
+	err = gormDB.AutoMigrate(&models.User{}, &models.Question{}, &models.Answer{}, &models.Comment{})
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}

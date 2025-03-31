@@ -8,6 +8,7 @@ type Question struct {
 	Votes       int       `json:"votes"`
 	DateCreated int64     `json:"date" gorm:"autoCreateTime"`
 	Answers     []*Answer `json:"answers" gorm:"many2many:question_answers;foreignKey:QuestionId;joinForeignKey:QuestionId"`
+	Comments    []Comment `json:"comments" gorm:"foreignKey:ParentId;constraint:OnDelete:CASCADE;"`
 }
 
 var mockQuestion = Question{

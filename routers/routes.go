@@ -23,5 +23,8 @@ func SetupRouter() *gin.Engine {
 	// Answer routes
 	router.POST("/answer/add", handlers.AddAnswer)
 
+	//comment routes
+	router.POST("/comment/add", handlers.AddComment)
+
 	return router
 }
