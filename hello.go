@@ -3,6 +3,7 @@ package main
 import (
 	"Learning/models"
 	"database/sql"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -52,10 +53,14 @@ func fetchQuestionById(c *gin.Context) {
 }
 
 func fetchQuestions(c *gin.Context) {
-	result := database.First(models.Question{})
+	var questions []models.Question
+	result := database.Find(&questions)
 
-	result.Error.Error()
-	c.IndentedJSON(http.StatusOK, mockQuestions)
+	if result.Error != nil {
+		fmt.Println("Error fetching records:", result.Error)
+		return
+	}
+	c.IndentedJSON(http.StatusOK, questions)
 }
 
 func fetchMyQuestions(c *gin.Context) {
