@@ -32,5 +32,9 @@ func SetupRouter() *gin.Engine {
 	//comment routes
 	router.POST("/comment/add", handlers.AddComment)
 
+	//tag routes
+	router.POST("/tag/add", handlers.AddTag)
+	router.POST("/tag/questions/all", handlers.FetchTagQuestions)
+
 	return router
 }
