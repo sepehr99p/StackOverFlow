@@ -3,7 +3,6 @@ package main
 import (
 	"Learning/models"
 	"database/sql"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -35,7 +34,10 @@ func main() {
 	//router.POST("question/add")
 	//router.POST("answer/add")
 	//router.POST("answer/delete")
-	router.Run("localhost:8080")
+	err := router.Run("localhost:8080")
+	if err != nil {
+		return
+	}
 }
 
 func fetchQuestionById(c *gin.Context) {
@@ -57,7 +59,7 @@ func fetchQuestions(c *gin.Context) {
 	result := database.Find(&questions)
 
 	if result.Error != nil {
-		fmt.Println("Error fetching records:", result.Error)
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "no question found"})
 		return
 	}
 	c.IndentedJSON(http.StatusOK, questions)
@@ -65,22 +67,17 @@ func fetchQuestions(c *gin.Context) {
 
 func fetchMyQuestions(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)
-
-	if id == 0 {
-
+	var userToFind = models.User{UserId: int(id)}
+	var questions []models.Question
+	result := database.Model(&userToFind).Find(questions)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "no question found"})
+		return
 	}
-
-	c.IndentedJSON(http.StatusOK, mockQuestions)
+	c.IndentedJSON(http.StatusOK, questions)
 }
 
 func connectDatabaseGorm() *gorm.DB {
-	//dsn := "root:test@tcp(127.0.0.1:3306)/stackoverflow?charset=utf8mb4&parseTime=True&loc=Local"
-	//db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	//
-	//if err != nil {
-	//	log.Fatal("failed to connect to gorm")
-	//}
-
 	sqlDB, err := sql.Open("mysql", "root:test@tcp(127.0.0.1:3306)/stackoverflow")
 	if err != nil {
 		log.Fatalf("error ")
@@ -89,33 +86,9 @@ func connectDatabaseGorm() *gorm.DB {
 		Conn: sqlDB,
 	}), &gorm.Config{})
 
-	result := gormDB.Create(&mockQuestions)
-
-	result.Error.Error()
-
-	gormDB.Select("SELECT * ")
-
+	migratorErr := gormDB.Migrator().AutoMigrate(models.Question{}, models.Answer{}, models.Comment{}, models.User{})
+	if migratorErr != nil {
+		return nil
+	}
 	return gormDB
-	//return db
-}
-
-func connectDatabase() {
-	db, err := sql.Open("mysql", "root:test@tcp(127.0.0.1:3306)/stackoverflow")
-	// if there is an error opening the connection, handle it
-	if err != nil {
-		panic(err.Error())
-	}
-	// defer the close till after the main function has finished
-	// executing
-	defer db.Close()
-
-	// perform a db.Query insert
-	insert, err := db.Query("INSERT INTO test VALUES ( 2, 'TEST' )")
-
-	// if there is an error inserting, handle it
-	if err != nil {
-		panic(err.Error())
-	}
-	// be careful deferring Queries if you are using transactions
-	defer insert.Close()
 }
