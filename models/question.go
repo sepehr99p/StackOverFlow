@@ -7,6 +7,7 @@ type Question struct {
 	Description string     `json:"description"`
 	Votes       int        `json:"votes"`
 	DateCreated int64      `json:"date" gorm:"autoCreateTime"`
+	Tags        []*Tag     `json:"tags" gorm:"many2many:tag_questions"`
 	Answers     []*Answer  `json:"answers" gorm:"many2many:question_answers;foreignKey:QuestionId;joinForeignKey:QuestionId"`
 	Comments    []*Comment `json:"comments" gorm:"foreignKey:ParentId;constraint:OnDelete:CASCADE;"`
 }
