@@ -1,11 +1,8 @@
 package models
 
-import "gorm.io/gorm"
-
 type Question struct {
-	gorm.Model
 	QuestionId  int64     `json:"question_id" gorm:"primary_key"`
-	UserId      int64     `json:"user_id"`
+	UserId      int       `json:"user_id" gorm:"index"` // Foreign key to User
 	TagId       int       `json:"tag_idz"`
 	Description string    `json:"description"`
 	Votes       int       `json:"votes"`
