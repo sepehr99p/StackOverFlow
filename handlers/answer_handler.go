@@ -3,9 +3,8 @@ package handlers
 import (
 	"Learning/database"
 	"Learning/models"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func AddAnswer(c *gin.Context) {

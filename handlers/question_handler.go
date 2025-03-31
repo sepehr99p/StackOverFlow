@@ -3,11 +3,10 @@ package handlers
 import (
 	"Learning/database"
 	"Learning/models"
+	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"strconv"
-
-	"github.com/gin-gonic/gin"
 )
 
 func FetchQuestionById(c *gin.Context) {
@@ -39,6 +38,23 @@ func FetchQuestions(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, questions)
+}
+
+func DeleteQuestion(c *gin.Context) {
+	var question models.Question
+
+	if err := c.ShouldBindJSON(&question); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		return
+	}
+
+	//todo : check if the user has permission to delete question
+	result := database.DB.Delete(&question)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting question", "error": result.Error.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusAccepted, question)
 }
 
 func PostQuestion(c *gin.Context) {
