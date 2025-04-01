@@ -29,8 +29,8 @@ func Aid() {
 	}
 }
 
-// Main function
-func main() {
+// Test function
+func Test() {
 
 	fmt.Println("!...Main Go-routine Start...!")
 
