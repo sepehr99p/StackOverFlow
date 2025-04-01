@@ -8,8 +8,6 @@ import (
 	"strconv"
 )
 
-// @Summary fetch question by id
-// @Description fetch question by id
 // @Tags questions
 // @Accept json
 // @Produce json
@@ -31,10 +29,7 @@ func FetchQuestionById(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, question)
 }
 
-// @Summary Fetch all questions
-// @Description fetch all the questions that have been asked
 // @Tags questions
-// @Accept json
 // @Produce json
 // @Success 201 {object} models.Question
 // @Failure 400 {object} map[string]string"
@@ -57,8 +52,6 @@ func FetchQuestions(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, questions)
 }
 
-// @Summary Delete a questions
-// @Description Deleting the selected questions
 // @Tags questions
 // @Accept json
 // @Produce json
@@ -84,16 +77,13 @@ func DeleteQuestion(c *gin.Context) {
 	c.IndentedJSON(http.StatusAccepted, question)
 }
 
-// postQuestion creates a new question
-// @Summary Add a new question
-// @Description Allows users to post a new question with tags, description, and votes
 // @Tags questions
 // @Accept json
 // @Produce json
-// @Param question body models.Question true "Question Data" // "question" is the body content for creating a new question
-// @Success 201 {object} models.Question // Success response with the created question
-// @Failure 400 {object} map[string]string // Error if bad request
-// @Failure 500 {object} map[string]string // Internal server error if something goes wrong
+// @Param question body models.Question true "Question Data"
+// @Success 201 {object} models.Question
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
 // @Router /questions/add [post]
 func PostQuestion(c *gin.Context) {
 	var question models.Question
@@ -118,8 +108,6 @@ func PostQuestion(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, question)
 }
 
-// @Summary Fetch questions asked by my user
-// @Description fetch questions asked by my user
 // @Tags questions
 // @Accept json
 // @Produce json

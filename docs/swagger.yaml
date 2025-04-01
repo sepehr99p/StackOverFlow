@@ -99,7 +99,6 @@ paths:
     post:
       consumes:
       - application/json
-      description: add new answer to a specific question
       parameters:
       - description: Answer object
         in: body
@@ -126,18 +125,16 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: add new answer
       tags:
       - answer
   /comment/add:
     post:
       consumes:
       - application/json
-      description: add new comment to a question or answer
       parameters:
       - description: Comment object
         in: body
-        name: question
+        name: comment
         required: true
         schema:
           $ref: '#/definitions/models.Comment'
@@ -160,15 +157,12 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: add new comment
       tags:
       - comment
   /questions/add:
     post:
       consumes:
       - application/json
-      description: Allows users to post a new question with tags, description, and
-        votes
       parameters:
       - description: Question Data
         in: body
@@ -195,14 +189,10 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Add a new question
       tags:
       - questions
   /questions/all:
     get:
-      consumes:
-      - application/json
-      description: fetch all the questions that have been asked
       produces:
       - application/json
       responses:
@@ -222,14 +212,12 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Fetch all questions
       tags:
       - questions
   /questions/delete:
     post:
       consumes:
       - application/json
-      description: Deleting the selected questions
       parameters:
       - description: Question object
         in: body
@@ -256,14 +244,12 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Delete a questions
       tags:
       - questions
   /questions/my/{id}:
     get:
       consumes:
       - application/json
-      description: fetch question by id
       parameters:
       - description: id
         in: path
@@ -289,14 +275,12 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: fetch question by id
       tags:
       - questions
   /questions/my/{user_id}:
     get:
       consumes:
       - application/json
-      description: fetch questions asked by my user
       parameters:
       - description: user_id
         in: path
@@ -322,18 +306,16 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: Fetch questions asked by my user
       tags:
       - questions
   /tag/add:
     post:
       consumes:
       - application/json
-      description: add new tag
       parameters:
       - description: Tag object
         in: body
-        name: question
+        name: tag
         required: true
         schema:
           $ref: '#/definitions/models.Tag'
@@ -356,21 +338,12 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: add new tag
       tags:
       - tag
   /tag/questions/all:
     get:
       consumes:
       - application/json
-      description: fetch tag questions
-      parameters:
-      - description: Tag object
-        in: body
-        name: question
-        required: true
-        schema:
-          $ref: '#/definitions/models.Tag'
       produces:
       - application/json
       responses:
@@ -390,18 +363,16 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: get questions of a tag
       tags:
       - tag
   /user/add:
     post:
       consumes:
       - application/json
-      description: add new user
       parameters:
       - description: Tag object
         in: body
-        name: question
+        name: user
         required: true
         schema:
           $ref: '#/definitions/models.User'
@@ -424,18 +395,16 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: add user
       tags:
       - user
   /user/delete:
     delete:
       consumes:
       - application/json
-      description: delete a user
       parameters:
       - description: Tag object
         in: body
-        name: question
+        name: user
         required: true
         schema:
           $ref: '#/definitions/models.User'
@@ -458,7 +427,6 @@ paths:
             additionalProperties:
               type: string
             type: object
-      summary: delete user
       tags:
       - user
 swagger: "2.0"

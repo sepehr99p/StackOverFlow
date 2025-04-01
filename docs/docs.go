@@ -17,7 +17,6 @@ const docTemplate = `{
     "paths": {
         "/answer/add": {
             "post": {
-                "description": "add new answer to a specific question",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,7 +26,6 @@ const docTemplate = `{
                 "tags": [
                     "answer"
                 ],
-                "summary": "add new answer",
                 "parameters": [
                     {
                         "description": "Answer object",
@@ -69,7 +67,6 @@ const docTemplate = `{
         },
         "/comment/add": {
             "post": {
-                "description": "add new comment to a question or answer",
                 "consumes": [
                     "application/json"
                 ],
@@ -79,11 +76,10 @@ const docTemplate = `{
                 "tags": [
                     "comment"
                 ],
-                "summary": "add new comment",
                 "parameters": [
                     {
                         "description": "Comment object",
-                        "name": "question",
+                        "name": "comment",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -121,7 +117,6 @@ const docTemplate = `{
         },
         "/questions/add": {
             "post": {
-                "description": "Allows users to post a new question with tags, description, and votes",
                 "consumes": [
                     "application/json"
                 ],
@@ -131,7 +126,6 @@ const docTemplate = `{
                 "tags": [
                     "questions"
                 ],
-                "summary": "Add a new question",
                 "parameters": [
                     {
                         "description": "Question Data",
@@ -173,17 +167,12 @@ const docTemplate = `{
         },
         "/questions/all": {
             "get": {
-                "description": "fetch all the questions that have been asked",
-                "consumes": [
-                    "application/json"
-                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "questions"
                 ],
-                "summary": "Fetch all questions",
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -214,7 +203,6 @@ const docTemplate = `{
         },
         "/questions/delete": {
             "post": {
-                "description": "Deleting the selected questions",
                 "consumes": [
                     "application/json"
                 ],
@@ -224,7 +212,6 @@ const docTemplate = `{
                 "tags": [
                     "questions"
                 ],
-                "summary": "Delete a questions",
                 "parameters": [
                     {
                         "description": "Question object",
@@ -266,7 +253,6 @@ const docTemplate = `{
         },
         "/questions/my/{id}": {
             "get": {
-                "description": "fetch question by id",
                 "consumes": [
                     "application/json"
                 ],
@@ -276,7 +262,6 @@ const docTemplate = `{
                 "tags": [
                     "questions"
                 ],
-                "summary": "fetch question by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -316,7 +301,6 @@ const docTemplate = `{
         },
         "/questions/my/{user_id}": {
             "get": {
-                "description": "fetch questions asked by my user",
                 "consumes": [
                     "application/json"
                 ],
@@ -326,7 +310,6 @@ const docTemplate = `{
                 "tags": [
                     "questions"
                 ],
-                "summary": "Fetch questions asked by my user",
                 "parameters": [
                     {
                         "type": "string",
@@ -366,7 +349,6 @@ const docTemplate = `{
         },
         "/tag/add": {
             "post": {
-                "description": "add new tag",
                 "consumes": [
                     "application/json"
                 ],
@@ -376,11 +358,10 @@ const docTemplate = `{
                 "tags": [
                     "tag"
                 ],
-                "summary": "add new tag",
                 "parameters": [
                     {
                         "description": "Tag object",
-                        "name": "question",
+                        "name": "tag",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -418,7 +399,6 @@ const docTemplate = `{
         },
         "/tag/questions/all": {
             "get": {
-                "description": "fetch tag questions",
                 "consumes": [
                     "application/json"
                 ],
@@ -427,18 +407,6 @@ const docTemplate = `{
                 ],
                 "tags": [
                     "tag"
-                ],
-                "summary": "get questions of a tag",
-                "parameters": [
-                    {
-                        "description": "Tag object",
-                        "name": "question",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Tag"
-                        }
-                    }
                 ],
                 "responses": {
                     "201": {
@@ -470,7 +438,6 @@ const docTemplate = `{
         },
         "/user/add": {
             "post": {
-                "description": "add new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -480,11 +447,10 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "add user",
                 "parameters": [
                     {
                         "description": "Tag object",
-                        "name": "question",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -522,7 +488,6 @@ const docTemplate = `{
         },
         "/user/delete": {
             "delete": {
-                "description": "delete a user",
                 "consumes": [
                     "application/json"
                 ],
@@ -532,11 +497,10 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "delete user",
                 "parameters": [
                     {
                         "description": "Tag object",
-                        "name": "question",
+                        "name": "user",
                         "in": "body",
                         "required": true,
                         "schema": {

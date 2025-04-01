@@ -7,12 +7,10 @@ import (
 	"net/http"
 )
 
-// @Summary add new tag
-// @Description add new tag
 // @Tags tag
 // @Accept json
 // @Produce json
-// @Param question body models.Tag true "Tag object"
+// @Param tag body models.Tag true "Tag object"
 // @Success 201 {object} models.Tag
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
@@ -33,12 +31,9 @@ func AddTag(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, tag)
 }
 
-// @Summary get questions of a tag
-// @Description fetch tag questions
 // @Tags tag
 // @Accept json
 // @Produce json
-// @Param question body models.Tag true "Tag object"
 // @Success 201 {object} models.Tag
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
