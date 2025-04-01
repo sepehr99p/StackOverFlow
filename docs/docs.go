@@ -544,12 +544,6 @@ const docTemplate = `{
                 "answer_id": {
                     "type": "integer"
                 },
-                "comments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Comment"
-                    }
-                },
                 "date": {
                     "type": "integer"
                 },

@@ -42,3 +42,20 @@ func AddAnswer(c *gin.Context) {
 	}
 	c.IndentedJSON(http.StatusCreated, answer)
 }
+
+func FetchAnswersForQuestion(questionId string) []gin.H {
+	var answers []models.Answer
+	database.DB.Where("question_id = ?", questionId).Find(&answers)
+	var answersWithComments []gin.H
+	for _, answer := range answers {
+		var answerComments []models.Comment
+		database.DB.Where("parent_id = ? AND parent_type = ?", answer.AnswerId, "answer").Find(&answerComments)
+
+		answerResponse := gin.H{
+			"answer":   answer,
+			"comments": answerComments,
+		}
+		answersWithComments = append(answersWithComments, answerResponse)
+	}
+	return answersWithComments
+}

@@ -3,10 +3,6 @@ definitions:
     properties:
       answer_id:
         type: integer
-      comments:
-        items:
-          $ref: '#/definitions/models.Comment'
-        type: array
       date:
         type: integer
       description:

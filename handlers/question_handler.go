@@ -65,14 +65,8 @@ func FetchQuestions(c *gin.Context) {
 
 	var questionResponses []gin.H
 	for _, question := range questions {
-		questionResponse := gin.H{
-			"question": question,
-		}
-
-		var answers []models.Answer
-		database.DB.Where("question_id = ?", question.QuestionId).Find(&answers)
-		questionResponse["answers"] = answers
-
+		questionResponse := gin.H{"question": question}
+		questionResponse["answers"] = FetchAnswersForQuestion(strconv.FormatInt(question.QuestionId, 10))
 		var comments []models.Comment
 		database.DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
 		questionResponse["comments"] = comments
@@ -169,14 +163,8 @@ func FetchMyQuestions(c *gin.Context) {
 
 	var questionResponses []gin.H
 	for _, question := range questions {
-		questionResponse := gin.H{
-			"question": question,
-		}
-
-		var answers []models.Answer
-		database.DB.Where("question_id = ?", question.QuestionId).Find(&answers)
-		questionResponse["answers"] = answers
-
+		questionResponse := gin.H{"question": question}
+		questionResponse["answers"] = FetchAnswersForQuestion(strconv.FormatInt(question.QuestionId, 10))
 		var comments []models.Comment
 		database.DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
 		questionResponse["comments"] = comments
