@@ -31,13 +31,13 @@ func slices() {
 	// Iterate slice
 	// using range in for loop
 	for index, ele := range slice2 {
-		fmt.Printf("Index = %d and element = %s\n", index+3, ele)
+		fmt.Printf("Index = %d and element = %d\n", index+3, ele)
 	}
 
 	// In the range for loop,
 	//if you don’t want to get the index value of the elements then you can use blank space(_) in place of index variable
 	for _, ele := range slice2 {
-		fmt.Printf("element = %s\n", ele)
+		fmt.Printf("element = %d\n", ele)
 	}
 
 	sort.Ints(slice)
