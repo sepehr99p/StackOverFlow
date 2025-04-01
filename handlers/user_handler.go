@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// AddUser
 // @Tags user
 // @Accept json
 // @Produce json
@@ -32,6 +33,7 @@ func AddUser(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, user)
 }
 
+// DeleteUser
 // @Tags user
 // @Accept json
 // @Produce json

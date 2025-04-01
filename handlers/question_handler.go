@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+// FetchQuestionById
 // @Tags questions
 // @Accept json
 // @Produce json
@@ -29,6 +30,7 @@ func FetchQuestionById(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, question)
 }
 
+// FetchQuestions
 // @Tags questions
 // @Produce json
 // @Success 201 {object} models.Question
@@ -52,6 +54,7 @@ func FetchQuestions(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, questions)
 }
 
+// DeleteQuestion
 // @Tags questions
 // @Accept json
 // @Produce json
@@ -77,6 +80,7 @@ func DeleteQuestion(c *gin.Context) {
 	c.IndentedJSON(http.StatusAccepted, question)
 }
 
+// PostQuestion
 // @Tags questions
 // @Accept json
 // @Produce json
@@ -108,6 +112,7 @@ func PostQuestion(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, question)
 }
 
+// FetchMyQuestions
 // @Tags questions
 // @Accept json
 // @Produce json

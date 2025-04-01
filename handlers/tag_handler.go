@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// AddTag
 // @Tags tag
 // @Accept json
 // @Produce json
@@ -31,6 +32,7 @@ func AddTag(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, tag)
 }
 
+// FetchTagQuestions
 // @Tags tag
 // @Accept json
 // @Produce json

@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// AddAnswer
 // @Tags answer
 // @Accept json
 // @Produce json
