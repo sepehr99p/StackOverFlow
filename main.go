@@ -7,8 +7,12 @@ import (
 )
 
 func main() {
-	// Connect to the database
-	database.ConnectDatabase()
+	ready := make(chan bool)
+	go func() {
+		database.ConnectDatabase()
+		ready <- true // Signal readiness
+	}()
+	<-ready
 
 	// Setup and start server
 	router := routes.SetupRouter()
