@@ -7,10 +7,20 @@ import (
 	"net/http"
 )
 
+// @Summary add new answer
+// @Description add new answer to a specific question
+// @Tags answer
+// @Accept json
+// @Produce json
+// @Param answer body models.Answer true "Answer object"
+// @Success 201 {object} models.Answer
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /answer/add [post]
 func AddAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
 		return
 	}
 
@@ -22,13 +32,13 @@ func AddAnswer(c *gin.Context) {
 
 	var question models.Question
 	if err := database.DB.First(&question, answer.QuestionId).Error; err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Question does not exist", "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Question does not exist"})
 		return
 	}
 
 	result := database.DB.Create(&answer)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating answer", "error": result.Error.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating answer"})
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, answer)

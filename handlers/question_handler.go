@@ -4,11 +4,20 @@ import (
 	"Learning/database"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"strconv"
 )
 
+// @Summary fetch question by id
+// @Description fetch question by id
+// @Tags questions
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 201 {object} models.Question
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /questions/my/{id} [get]
 func FetchQuestionById(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 
@@ -22,13 +31,21 @@ func FetchQuestionById(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, question)
 }
 
+// @Summary Fetch all questions
+// @Description fetch all the questions that have been asked
+// @Tags questions
+// @Accept json
+// @Produce json
+// @Success 201 {object} models.Question
+// @Failure 400 {object} map[string]string"
+// @Failure 500 {object} map[string]string"
+// @Router /questions/all [get]
 func FetchQuestions(c *gin.Context) {
 	var questions []models.Question
 	result := database.DB.Find(&questions)
 
 	if result.Error != nil {
-		log.Println("Error fetching questions:", result.Error)
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving questions"})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving questions", "error": result.Error.Error()})
 		return
 	}
 
@@ -40,6 +57,16 @@ func FetchQuestions(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, questions)
 }
 
+// @Summary Delete a questions
+// @Description Deleting the selected questions
+// @Tags questions
+// @Accept json
+// @Produce json
+// @Param question body models.Question true "Question object"
+// @Success 201 {object} models.Question
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /questions/delete [post]
 func DeleteQuestion(c *gin.Context) {
 	var question models.Question
 
@@ -57,6 +84,17 @@ func DeleteQuestion(c *gin.Context) {
 	c.IndentedJSON(http.StatusAccepted, question)
 }
 
+// postQuestion creates a new question
+// @Summary Add a new question
+// @Description Allows users to post a new question with tags, description, and votes
+// @Tags questions
+// @Accept json
+// @Produce json
+// @Param question body models.Question true "Question Data" // "question" is the body content for creating a new question
+// @Success 201 {object} models.Question // Success response with the created question
+// @Failure 400 {object} map[string]string // Error if bad request
+// @Failure 500 {object} map[string]string // Internal server error if something goes wrong
+// @Router /questions/add [post]
 func PostQuestion(c *gin.Context) {
 	var question models.Question
 
@@ -80,6 +118,16 @@ func PostQuestion(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, question)
 }
 
+// @Summary Fetch questions asked by my user
+// @Description fetch questions asked by my user
+// @Tags questions
+// @Accept json
+// @Produce json
+// @Param id path string true "user_id"
+// @Success 201 {object} models.Question
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /questions/my/{user_id} [get]
 func FetchMyQuestions(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)
 	var userToFind = models.User{UserId: int(id)}
@@ -88,8 +136,7 @@ func FetchMyQuestions(c *gin.Context) {
 	result := database.DB.Model(&userToFind).Where("user_id = ?", id).Find(&questions)
 
 	if result.Error != nil {
-		log.Println("Error fetching user questions:", result.Error)
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving user's questions"})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving user's questions", "error": result.Error.Error()})
 		return
 	}
 

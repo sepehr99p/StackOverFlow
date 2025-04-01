@@ -1,0 +1,464 @@
+definitions:
+  models.Answer:
+    properties:
+      answer_id:
+        type: integer
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      date:
+        type: integer
+      description:
+        type: string
+      question_id:
+        description: Foreign key to Question
+        type: integer
+      user_id:
+        type: integer
+      votes:
+        type: integer
+    type: object
+  models.Comment:
+    properties:
+      comment_id:
+        type: integer
+      date:
+        type: integer
+      description:
+        type: string
+      parent_id:
+        type: integer
+      parent_type:
+        description: '"question" or "answer"'
+        type: string
+      user_id:
+        type: integer
+      votes:
+        type: integer
+    type: object
+  models.Question:
+    properties:
+      answers:
+        description: One-to-Many
+        items:
+          $ref: '#/definitions/models.Answer'
+        type: array
+      comments:
+        items:
+          $ref: '#/definitions/models.Comment'
+        type: array
+      date:
+        type: integer
+      description:
+        type: string
+      question_id:
+        type: integer
+      tag_idz:
+        type: integer
+      tags:
+        items:
+          $ref: '#/definitions/models.Tag'
+        type: array
+      user_id:
+        description: Foreign key to User
+        type: integer
+      votes:
+        type: integer
+    type: object
+  models.Tag:
+    properties:
+      name:
+        type: string
+      questions:
+        items:
+          $ref: '#/definitions/models.Question'
+        type: array
+      tag_id:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      is_admin:
+        type: boolean
+      reputation:
+        type: integer
+      user_id:
+        type: integer
+      user_name:
+        type: string
+      user_questions:
+        items:
+          $ref: '#/definitions/models.Question'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /answer/add:
+    post:
+      consumes:
+      - application/json
+      description: add new answer to a specific question
+      parameters:
+      - description: Answer object
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/models.Answer'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Answer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: add new answer
+      tags:
+      - answer
+  /comment/add:
+    post:
+      consumes:
+      - application/json
+      description: add new comment to a question or answer
+      parameters:
+      - description: Comment object
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: add new comment
+      tags:
+      - comment
+  /questions/add:
+    post:
+      consumes:
+      - application/json
+      description: Allows users to post a new question with tags, description, and
+        votes
+      parameters:
+      - description: Question Data
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.Question'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Add a new question
+      tags:
+      - questions
+  /questions/all:
+    get:
+      consumes:
+      - application/json
+      description: fetch all the questions that have been asked
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Fetch all questions
+      tags:
+      - questions
+  /questions/delete:
+    post:
+      consumes:
+      - application/json
+      description: Deleting the selected questions
+      parameters:
+      - description: Question object
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.Question'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a questions
+      tags:
+      - questions
+  /questions/my/{id}:
+    get:
+      consumes:
+      - application/json
+      description: fetch question by id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: fetch question by id
+      tags:
+      - questions
+  /questions/my/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: fetch questions asked by my user
+      parameters:
+      - description: user_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Fetch questions asked by my user
+      tags:
+      - questions
+  /tag/add:
+    post:
+      consumes:
+      - application/json
+      description: add new tag
+      parameters:
+      - description: Tag object
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tag'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tag'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: add new tag
+      tags:
+      - tag
+  /tag/questions/all:
+    get:
+      consumes:
+      - application/json
+      description: fetch tag questions
+      parameters:
+      - description: Tag object
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tag'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tag'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: get questions of a tag
+      tags:
+      - tag
+  /user/add:
+    post:
+      consumes:
+      - application/json
+      description: add new user
+      parameters:
+      - description: Tag object
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: add user
+      tags:
+      - user
+  /user/delete:
+    delete:
+      consumes:
+      - application/json
+      description: delete a user
+      parameters:
+      - description: Tag object
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: delete user
+      tags:
+      - user
+swagger: "2.0"

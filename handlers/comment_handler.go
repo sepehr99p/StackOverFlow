@@ -7,6 +7,16 @@ import (
 	"net/http"
 )
 
+// @Summary add new comment
+// @Description add new comment to a question or answer
+// @Tags comment
+// @Accept json
+// @Produce json
+// @Param question body models.Comment true "Comment object"
+// @Success 201 {object} models.Comment
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /comment/add [post]
 func AddComment(c *gin.Context) {
 	var comment models.Comment
 
