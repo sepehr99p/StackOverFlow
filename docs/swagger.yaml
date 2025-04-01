@@ -39,22 +39,11 @@ definitions:
     type: object
   models.Question:
     properties:
-      answers:
-        description: One-to-Many
-        items:
-          $ref: '#/definitions/models.Answer'
-        type: array
-      comments:
-        items:
-          $ref: '#/definitions/models.Comment'
-        type: array
       date:
         type: integer
       description:
         type: string
       question_id:
-        type: integer
-      tag_idz:
         type: integer
       tags:
         items:
@@ -87,10 +76,6 @@ definitions:
         type: integer
       user_name:
         type: string
-      user_questions:
-        items:
-          $ref: '#/definitions/models.Question'
-        type: array
     type: object
 info:
   contact: {}

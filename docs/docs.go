@@ -598,19 +598,6 @@ const docTemplate = `{
         "models.Question": {
             "type": "object",
             "properties": {
-                "answers": {
-                    "description": "One-to-Many",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Answer"
-                    }
-                },
-                "comments": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Comment"
-                    }
-                },
                 "date": {
                     "type": "integer"
                 },
@@ -618,9 +605,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "question_id": {
-                    "type": "integer"
-                },
-                "tag_idz": {
                     "type": "integer"
                 },
                 "tags": {
@@ -669,12 +653,6 @@ const docTemplate = `{
                 },
                 "user_name": {
                     "type": "string"
-                },
-                "user_questions": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Question"
-                    }
                 }
             }
         }

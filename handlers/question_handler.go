@@ -27,7 +27,19 @@ func FetchQuestionById(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, question)
+	var answers []models.Answer
+	database.DB.Where("question_id = ?", id).Find(&answers)
+
+	var comments []models.Comment
+	database.DB.Where("parent_id = ? AND parent_type = ?", id, "question").Find(&comments)
+
+	response := gin.H{
+		"question": question,
+		"answers":  answers,
+		"comments": comments,
+	}
+
+	c.IndentedJSON(http.StatusOK, response)
 }
 
 // FetchQuestions
@@ -51,7 +63,24 @@ func FetchQuestions(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, questions)
+	var questionResponses []gin.H
+	for _, question := range questions {
+		questionResponse := gin.H{
+			"question": question,
+		}
+
+		var answers []models.Answer
+		database.DB.Where("question_id = ?", question.QuestionId).Find(&answers)
+		questionResponse["answers"] = answers
+
+		var comments []models.Comment
+		database.DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
+		questionResponse["comments"] = comments
+
+		questionResponses = append(questionResponses, questionResponse)
+	}
+
+	c.IndentedJSON(http.StatusOK, questionResponses)
 }
 
 // DeleteQuestion
@@ -138,5 +167,22 @@ func FetchMyQuestions(c *gin.Context) {
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, questions)
+	var questionResponses []gin.H
+	for _, question := range questions {
+		questionResponse := gin.H{
+			"question": question,
+		}
+
+		var answers []models.Answer
+		database.DB.Where("question_id = ?", question.QuestionId).Find(&answers)
+		questionResponse["answers"] = answers
+
+		var comments []models.Comment
+		database.DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
+		questionResponse["comments"] = comments
+
+		questionResponses = append(questionResponses, questionResponse)
+	}
+
+	c.IndentedJSON(http.StatusOK, questionResponses)
 }
