@@ -24,14 +24,12 @@ func AddComment(c *gin.Context) {
 		return
 	}
 
-	// Check if the user exists
 	var user models.User
 	if err := database.DB.First(&user, comment.UserId).Error; err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "User does not exist"})
 		return
 	}
 
-	// Check if the parent exists
 	if comment.ParentType == "question" {
 		var question models.Question
 		if err := database.DB.First(&question, comment.ParentId).Error; err != nil {
@@ -49,7 +47,6 @@ func AddComment(c *gin.Context) {
 		return
 	}
 
-	// Save comment
 	result := database.DB.Create(&comment)
 	if result.Error != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating comment"})

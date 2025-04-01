@@ -15,7 +15,6 @@ import (
 // @Param id path string true "id"
 // @Success 201 {object} models.Question
 // @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /questions/my/{id} [get]
 func FetchQuestionById(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -63,17 +62,7 @@ func FetchQuestions(c *gin.Context) {
 		return
 	}
 
-	var questionResponses []gin.H
-	for _, question := range questions {
-		questionResponse := gin.H{"question": question}
-		questionResponse["answers"] = FetchAnswersForQuestion(strconv.FormatInt(question.QuestionId, 10))
-		var comments []models.Comment
-		database.DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
-		questionResponse["comments"] = comments
-
-		questionResponses = append(questionResponses, questionResponse)
-	}
-
+	var questionResponses = fetchQuestionsWithAnswersAndComments(questions)
 	c.IndentedJSON(http.StatusOK, questionResponses)
 }
 
@@ -161,6 +150,12 @@ func FetchMyQuestions(c *gin.Context) {
 		return
 	}
 
+	var questionResponses = fetchQuestionsWithAnswersAndComments(questions)
+
+	c.IndentedJSON(http.StatusOK, questionResponses)
+}
+
+func fetchQuestionsWithAnswersAndComments(questions []models.Question) []gin.H {
 	var questionResponses []gin.H
 	for _, question := range questions {
 		questionResponse := gin.H{"question": question}
@@ -168,9 +163,7 @@ func FetchMyQuestions(c *gin.Context) {
 		var comments []models.Comment
 		database.DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
 		questionResponse["comments"] = comments
-
 		questionResponses = append(questionResponses, questionResponse)
 	}
-
-	c.IndentedJSON(http.StatusOK, questionResponses)
+	return questionResponses
 }
