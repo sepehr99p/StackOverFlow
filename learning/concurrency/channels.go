@@ -13,7 +13,7 @@ func myfunc(ch chan int) {
 	fmt.Println(234 + <-ch)
 }
 
-func main() {
+func test() {
 	fmt.Println("start Main method")
 	// Creating a channel
 	ch := make(chan int)
