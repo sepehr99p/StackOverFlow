@@ -6,7 +6,3 @@ type User struct {
 	Reputation int    `json:"reputation"`
 	IsAdmin    bool   `json:"is_admin" gorm:"default:false"`
 }
-
-var mockUser = User{
-	UserId: 11, UserName: "sepehr", Reputation: 371,
-}

@@ -9,5 +9,3 @@ type Answer struct {
 	Votes       int    `json:"votes"`
 	//Comments    []*Comment `json:"comments" gorm:"foreignKey:ParentId;constraint:OnDelete:CASCADE;"`
 }
-
-var mockAnswer = Answer{UserId: 234, Description: "some answer description", Votes: 44, DateCreated: 33344}
