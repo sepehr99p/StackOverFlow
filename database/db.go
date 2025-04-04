@@ -1,38 +1,40 @@
 package database
 
 import (
-	"database/sql"
+	"Learning/models"
+	"fmt"
+	"github.com/joho/godotenv"
+	"log"
+	"os"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
-)
-
-import (
-	"Learning/models"
 )
 
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	sqlDB, err := sql.Open("mysql", "root:test@tcp(127.0.0.1:3306)/stackoverflow")
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatalf("Failed to open SQL connection: %v", err)
+		log.Println("No .env file found or couldn't load. Using system envs.")
 	}
 
-	gormDB, err := gorm.Open(mysql.New(mysql.Config{
-		Conn: sqlDB,
-	}), &gorm.Config{})
+	user := os.Getenv("DB_USER")
+	password := os.Getenv("DB_PASSWORD")
+	host := os.Getenv("DB_HOST")
+	port := os.Getenv("DB_PORT")
+	dbname := os.Getenv("DB_NAME")
 
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", user, password, host, port, dbname)
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("Failed to connect to the database: %v", err)
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	// Perform migrations
-	err = gormDB.AutoMigrate(&models.User{}, &models.Question{}, &models.Answer{}, &models.Comment{}, &models.Tag{})
+	err = DB.AutoMigrate(&models.User{}, &models.Question{}, &models.Answer{}, &models.Comment{}, &models.Tag{})
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}
 
-	log.Println("Database migration successful!")
-	DB = gormDB
+	log.Println("Database connected and migrated successfully!")
 }
