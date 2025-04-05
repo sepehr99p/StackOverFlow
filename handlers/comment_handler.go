@@ -7,6 +7,28 @@ import (
 	"net/http"
 )
 
+// DeleteComment
+// @Tags comment
+// @Accept json
+// @Produce json
+// @Param comment body models.Comment true "Comment object"
+// @Success 201 {object} models.Comment
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /comment/delete [delete]
+func DeleteComment(c *gin.Context) {
+	var comment models.Comment
+	if err := c.ShouldBindJSON(&comment); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid json format"})
+		return
+	}
+	if result := database.DB.Delete(&comment).Error; result != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to delete comment"})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, comment)
+}
+
 // AddComment
 // @Tags comment
 // @Accept json
