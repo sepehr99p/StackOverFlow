@@ -21,6 +21,7 @@ func SetupRouter() *gin.Engine {
 	router.GET("/questions/all", handlers.FetchQuestions)
 	router.POST("/questions/add", handlers.PostQuestion)
 	router.GET("/questions/my/:user_id", handlers.FetchMyQuestions)
+	router.GET("/questions/voteUp/:id}", handlers.VoteUpQuestion)
 
 	// User routes
 	router.POST("/user/add", handlers.AddUser)

@@ -8,6 +8,29 @@ import (
 	"strconv"
 )
 
+// VoteUpQuestion
+// @Tags questions
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 201 {object} models.Question
+// @Failure 400 {object} map[string]string
+// @Router /questions/voteUp/{id} [get]
+func VoteUpQuestion(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	var question models.Question
+	result := database.DB.First(&question, id)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
+		return
+	}
+	//todo : check if user has enough reputation to vote up a question
+	question.Votes += 1
+	database.DB.Save(&question)
+	c.IndentedJSON(http.StatusCreated, question)
+}
+
 // FetchQuestionById
 // @Tags questions
 // @Accept json

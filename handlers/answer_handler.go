@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+//todo : delete answer
+
 // CorrectAnswer
 // @Tags answer
 // @Accept json
@@ -15,6 +17,7 @@ import (
 // @Success 201 {object} models.Answer
 // @Router /answer/correctAnswer/{id} [get]
 func CorrectAnswer(c *gin.Context) {
+	//todo : check if user has asked the question to mark it as correct
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	var answer models.Answer
 	if err := database.DB.Where("answer_id = ?", id).First(&answer).Error; err != nil {
