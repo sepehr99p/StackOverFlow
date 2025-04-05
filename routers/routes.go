@@ -7,7 +7,11 @@ import (
 )
 
 func SetupRouter() *gin.Engine {
+
 	router := gin.Default()
+
+	router.POST("/login", handlers.LoginHandler)
+	router.GET("/protected", handlers.ProtectedHandler)
 
 	adminRoutes := router.Group("/admin")
 

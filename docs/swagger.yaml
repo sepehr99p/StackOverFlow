@@ -68,6 +68,8 @@ definitions:
     properties:
       is_admin:
         type: boolean
+      password:
+        type: string
       reputation:
         type: integer
       user_id:
@@ -225,6 +227,45 @@ paths:
             type: object
       tags:
       - comment
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User object
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+      tags:
+      - auth
+  /protected:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      tags:
+      - auth
   /questions/add:
     post:
       consumes:
@@ -514,4 +555,9 @@ paths:
             type: object
       tags:
       - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

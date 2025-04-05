@@ -9,6 +9,9 @@ import (
 	"log"
 )
 
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	ready := make(chan bool)
 	go func() {
