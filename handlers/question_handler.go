@@ -27,7 +27,10 @@ func VoteUpQuestion(c *gin.Context) {
 	}
 	//todo : check if user has enough reputation to vote up a question
 	question.Votes += 1
-	database.DB.Save(&question)
+	if updateResult := database.DB.Save(&question).Error; updateResult != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
+		return
+	}
 	c.IndentedJSON(http.StatusCreated, question)
 }
 
