@@ -193,6 +193,38 @@ paths:
             type: object
       tags:
       - comment
+  /comment/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Comment object
+        in: body
+        name: comment
+        required: true
+        schema:
+          $ref: '#/definitions/models.Comment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Comment'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      tags:
+      - comment
   /questions/add:
     post:
       consumes:
