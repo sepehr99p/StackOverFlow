@@ -123,6 +123,44 @@ paths:
             $ref: '#/definitions/models.Answer'
       tags:
       - answer
+  /answer/delete:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Answer'
+      tags:
+      - answer
+  /answer/voteUp/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Answer'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      tags:
+      - answer
   /comment/add:
     post:
       consumes:
@@ -211,7 +249,7 @@ paths:
       tags:
       - questions
   /questions/delete:
-    post:
+    delete:
       consumes:
       - application/json
       parameters:
@@ -292,6 +330,31 @@ paths:
             type: object
         "500":
           description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      tags:
+      - questions
+  /questions/voteUp/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+        "400":
+          description: Bad Request
           schema:
             additionalProperties:
               type: string

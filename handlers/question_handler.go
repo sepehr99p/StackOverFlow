@@ -100,7 +100,7 @@ func FetchQuestions(c *gin.Context) {
 // @Success 201 {object} models.Question
 // @Failure 400 {object} map[string]string
 // @Failure 500 {object} map[string]string
-// @Router /questions/delete [post]
+// @Router /questions/delete [delete]
 func DeleteQuestion(c *gin.Context) {
 	var question models.Question
 

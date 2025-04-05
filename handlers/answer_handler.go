@@ -8,7 +8,27 @@ import (
 	"strconv"
 )
 
-//todo : delete answer
+// CorrectAnswer
+// @Tags answer
+// @Accept json
+// @Produce json
+// @Success 201 {object} models.Answer
+// @Router /answer/delete [delete]
+func DeleteAnswer(c *gin.Context) {
+	var answer models.Answer
+	if err := c.ShouldBindJSON(&answer); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
+		return
+	}
+	//todo : check if user has permission to delete answer
+
+	result := database.DB.Delete(&answer)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating answer"})
+		return
+	}
+	c.IndentedJSON(http.StatusCreated, answer)
+}
 
 // CorrectAnswer
 // @Tags answer

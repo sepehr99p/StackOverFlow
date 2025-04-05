@@ -31,6 +31,7 @@ func SetupRouter() *gin.Engine {
 	router.POST("/answer/add", handlers.AddAnswer)
 	router.GET("/answer/correctAnswer/:id", handlers.CorrectAnswer)
 	router.GET("/answer/voteUp/:id}", handlers.VoteUpAnswer)
+	router.GET("/answer/delete", handlers.DeleteAnswer)
 
 	//comment routes
 	router.POST("/comment/add", handlers.AddComment)
