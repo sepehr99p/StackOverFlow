@@ -7,6 +7,8 @@ definitions:
         type: integer
       description:
         type: string
+      is_correct_answer:
+        type: boolean
       question_id:
         description: Foreign key to Question
         type: integer
@@ -106,6 +108,19 @@ paths:
             additionalProperties:
               type: string
             type: object
+      tags:
+      - answer
+  /answer/correctAnswer/{id}:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Answer'
       tags:
       - answer
   /comment/add:
@@ -246,12 +261,6 @@ paths:
             $ref: '#/definitions/models.Question'
         "400":
           description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
           schema:
             additionalProperties:
               type: string

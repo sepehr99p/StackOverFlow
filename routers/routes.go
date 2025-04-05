@@ -28,6 +28,7 @@ func SetupRouter() *gin.Engine {
 
 	// Answer routes
 	router.POST("/answer/add", handlers.AddAnswer)
+	router.GET("/answer/correctAnswer/:id", handlers.CorrectAnswer)
 
 	//comment routes
 	router.POST("/comment/add", handlers.AddComment)

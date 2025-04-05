@@ -5,7 +5,29 @@ import (
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
+
+// CorrectAnswer
+// @Tags answer
+// @Accept json
+// @Produce json
+// @Success 201 {object} models.Answer
+// @Router /answer/correctAnswer/{id} [get]
+func CorrectAnswer(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	var answer models.Answer
+	if err := database.DB.Where("answer_id = ?", id).First(&answer).Error; err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "answer not found"})
+		return
+	}
+	answer.IsCorrectAnswer = true
+	if updateError := database.DB.Save(&answer).Error; updateError != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to update the answer"})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, answer)
+}
 
 // AddAnswer
 // @Tags answer
