@@ -68,6 +68,32 @@ func AddAnswer(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, answer)
 }
 
+// VoteUpAnswer
+// @Tags answer
+// @Accept json
+// @Produce json
+// @Param id path string true "id"
+// @Success 201 {object} models.Answer
+// @Failure 400 {object} map[string]string
+// @Router /answer/voteUp/{id} [get]
+func VoteUpAnswer(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+
+	var answer models.Question
+	result := database.DB.First(&answer, id)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
+		return
+	}
+	//todo : check if user has enough reputation to vote up a answer
+	answer.Votes += 1
+	if updateResult := database.DB.Save(&answer).Error; updateResult != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
+		return
+	}
+	c.IndentedJSON(http.StatusCreated, answer)
+}
+
 func FetchAnswersForQuestion(questionId string) []gin.H {
 	var answers []models.Answer
 	database.DB.Where("question_id = ?", questionId).Find(&answers)
