@@ -10,6 +10,7 @@ func SetupRouter() *gin.Engine {
 
 	router := gin.Default()
 
+	router.POST("/register", handlers.RegisterHandler)
 	router.POST("/login", handlers.LoginHandler)
 	router.GET("/protected", handlers.ProtectedHandler)
 

@@ -77,6 +77,13 @@ definitions:
       user_name:
         type: string
     type: object
+  models.UserRegister:
+    properties:
+      password:
+        type: string
+      phone_number:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -434,6 +441,26 @@ paths:
             type: object
       tags:
       - questions
+  /register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User object
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      tags:
+      - auth
   /tag/add:
     post:
       consumes:

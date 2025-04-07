@@ -1,13 +1,51 @@
 package handlers
 
 import (
+	"Learning/database"
 	"Learning/models"
 	"Learning/token"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
 )
+
+// RegisterHandler
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param answer body models.UserRegister true "User object"
+// @Success 201 {object} string
+// @Router /register [post]
+func RegisterHandler(c *gin.Context) {
+	var user models.UserRegister
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		return
+	}
+	var userModel = models.User{UserName: user.PhoneNumber, Password: user.Password}
+	dataExistenceResult := database.DB.Find(&userModel)
+	if dataExistenceResult.Error != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "error querying database"})
+		return
+	}
+	if dataExistenceResult.RowsAffected == 0 {
+		result := database.DB.Create(&user)
+		if result.Error != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating user", "error": result.Error.Error()})
+			return
+		}
+		tokenString, err := token.CreateToken(userModel.UserName)
+		if err != nil {
+			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
+			return
+		}
+		c.IndentedJSON(http.StatusCreated, tokenString)
+	} else {
+		c.IndentedJSON(http.StatusConflict, gin.H{"message": "user already exist"})
+		return
+	}
+
+}
 
 // LoginHandler
 // @Tags auth
@@ -23,19 +61,19 @@ func LoginHandler(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
 		return
 	}
-	fmt.Printf("The user request value %v", user)
-
-	if user.UserName == "Check" && user.Password == "123456" {
-		tokenString, err := token.CreateToken(user.UserName)
-		if err != nil {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "no username found"})
-			return
-		}
-		c.IndentedJSON(http.StatusOK, tokenString)
+	dbUser := models.User{UserName: user.UserName, Password: user.Password}
+	if queryResult := database.DB.Find(&dbUser).Error; queryResult != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
 		return
-	} else {
-		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
 	}
+
+	tokenString, err := token.CreateToken(user.UserName)
+	if err != nil {
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, tokenString)
+	return
 }
 
 // ProtectedHandler
