@@ -5,6 +5,7 @@ import (
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"regexp"
 )
 
 // DeleteComment
@@ -66,6 +67,17 @@ func AddComment(c *gin.Context) {
 		}
 	} else {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid parent type"})
+		return
+	}
+
+	// regex can be updated
+	matchString, err := regexp.MatchString("^[]0-9a-zA-Z,!^`@{}=().;/~_|[-]+$", comment.Description)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "error checking description"})
+		return
+	}
+	if matchString == true {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Description containing bad characters"})
 		return
 	}
 

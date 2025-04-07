@@ -5,6 +5,7 @@ import (
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"regexp"
 	"strconv"
 )
 
@@ -77,6 +78,17 @@ func AddAnswer(c *gin.Context) {
 	var question models.Question
 	if err := database.DB.First(&question, answer.QuestionId).Error; err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Question does not exist"})
+		return
+	}
+
+	// regex can be updated
+	matchString, err := regexp.MatchString("^[]0-9a-zA-Z,!^`@{}=().;/~_|[-]+$", answer.Description)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "error checking description"})
+		return
+	}
+	if matchString == true {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Description containing bad characters"})
 		return
 	}
 
