@@ -31,9 +31,9 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	var userCreatingResult = database.CreateUser(userInput)
-	if userCreatingResult != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": userCreatingResult})
+	var userCreatingErr = database.CreateUser(userInput)
+	if userCreatingErr != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": userCreatingErr})
 	}
 
 	tokenString, err := token.CreateToken(userInput.PhoneNumber)
