@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var secretKey = os.Getenv("JWT_SECRET")
+var secretKey = []byte(os.Getenv("JWT_SECRET"))
 
 func CreateToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
