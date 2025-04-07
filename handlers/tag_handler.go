@@ -13,8 +13,6 @@ import (
 // @Produce json
 // @Param tag body models.Tag true "Tag object"
 // @Success 201 {object} models.Tag
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /tag/add [post]
 func AddTag(c *gin.Context) {
 	var tag models.Tag
@@ -37,8 +35,6 @@ func AddTag(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 201 {object} models.Tag
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /tag/questions/all [get]
 func FetchTagQuestions(c *gin.Context) {
 	tagName := c.Param("name")

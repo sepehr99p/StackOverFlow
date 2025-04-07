@@ -59,8 +59,6 @@ func CorrectAnswer(c *gin.Context) {
 // @Produce json
 // @Param answer body models.Answer true "Answer object"
 // @Success 201 {object} models.Answer
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /answer/add [post]
 func AddAnswer(c *gin.Context) {
 	var answer models.Answer

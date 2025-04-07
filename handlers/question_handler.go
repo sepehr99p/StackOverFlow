@@ -14,7 +14,6 @@ import (
 // @Produce json
 // @Param id path string true "id"
 // @Success 201 {object} models.Question
-// @Failure 400 {object} map[string]string
 // @Router /questions/voteUp/{id} [get]
 func VoteUpQuestion(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -40,7 +39,6 @@ func VoteUpQuestion(c *gin.Context) {
 // @Produce json
 // @Param id path string true "id"
 // @Success 201 {object} models.Question
-// @Failure 400 {object} map[string]string
 // @Router /questions/my/{id} [get]
 func FetchQuestionById(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -71,8 +69,6 @@ func FetchQuestionById(c *gin.Context) {
 // @Tags questions
 // @Produce json
 // @Success 201 {object} models.Question
-// @Failure 400 {object} map[string]string"
-// @Failure 500 {object} map[string]string"
 // @Router /questions/all [get]
 func FetchQuestions(c *gin.Context) {
 	var questions []models.Question
@@ -98,8 +94,6 @@ func FetchQuestions(c *gin.Context) {
 // @Produce json
 // @Param question body models.Question true "Question object"
 // @Success 201 {object} models.Question
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /questions/delete [delete]
 func DeleteQuestion(c *gin.Context) {
 	var question models.Question
@@ -124,8 +118,6 @@ func DeleteQuestion(c *gin.Context) {
 // @Produce json
 // @Param question body models.Question true "Question Data"
 // @Success 201 {object} models.Question
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /questions/add [post]
 func PostQuestion(c *gin.Context) {
 	var question models.Question
@@ -156,8 +148,6 @@ func PostQuestion(c *gin.Context) {
 // @Produce json
 // @Param id path string true "user_id"
 // @Success 201 {object} models.Question
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /questions/my/{user_id} [get]
 func FetchMyQuestions(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)

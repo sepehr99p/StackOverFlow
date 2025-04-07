@@ -105,18 +105,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Answer'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - answer
   /answer/correctAnswer/{id}:
@@ -291,18 +279,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Question'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - questions
   /questions/all:
@@ -314,18 +290,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Question'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - questions
   /questions/delete:
@@ -346,18 +310,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Question'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - questions
   /questions/my/{id}:
@@ -377,12 +329,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Question'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - questions
   /questions/my/{user_id}:
@@ -402,18 +348,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Question'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - questions
   /questions/voteUp/{id}:
@@ -433,12 +367,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Question'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - questions
   /register:
@@ -479,18 +407,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Tag'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - tag
   /tag/questions/all:
@@ -504,18 +420,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Tag'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - tag
   /user/add:
@@ -536,18 +440,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.User'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - user
   /user/delete:
@@ -568,18 +460,6 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.User'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - user
 securityDefinitions:

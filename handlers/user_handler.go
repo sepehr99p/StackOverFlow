@@ -14,8 +14,6 @@ import (
 // @Produce json
 // @Param user body models.User true "Tag object"
 // @Success 201 {object} models.User
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /user/add [post]
 func AddUser(c *gin.Context) {
 	var user models.User
@@ -39,8 +37,6 @@ func AddUser(c *gin.Context) {
 // @Produce json
 // @Param user body models.User true "Tag object"
 // @Success 201 {object} models.User
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
 // @Router /user/delete [delete]
 func DeleteUser(c *gin.Context) {
 	var user models.User
