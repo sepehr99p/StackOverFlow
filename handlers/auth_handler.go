@@ -10,39 +10,13 @@ import (
 	"strings"
 )
 
-func isUserAlreadyExist(phoneNumber string) bool {
-	var count int64
-	database.DB.Model(&models.User{}).
-		Where("user_name = ?", phoneNumber).
-		Count(&count)
-	return count > 0
-}
-
-func createUser(user models.UserRegister) *string {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		message := "Error hashing password"
-		return &message
-	}
-	newUser := models.User{
-		UserName: user.PhoneNumber,
-		Password: string(hashedPassword),
-	}
-	result := database.DB.Create(&newUser)
-	if result.Error != nil {
-		message := result.Error.Error()
-		return &message
-	}
-	return nil
-}
-
 // RegisterHandler
 // @Tags auth
 // @Accept json
 // @Produce json
 // @Param answer body models.UserRegister true "User object"
 // @Success 201 {object} string
-// @Router /register [post]
+// @Router /auth/register [post]
 func RegisterHandler(c *gin.Context) {
 	var userInput models.UserRegister
 	if err := c.ShouldBindJSON(&userInput); err != nil {
@@ -52,14 +26,14 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	if isUserAlreadyExist(userInput.PhoneNumber) {
+	if database.IsUserAlreadyExist(userInput.PhoneNumber) {
 		c.IndentedJSON(http.StatusConflict, gin.H{"message": "User already exists"})
 		return
 	}
 
-	var userCreatingResult = createUser(userInput)
-	if userCreatingResult != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": userCreatingResult})
+	var userCreatingErr = database.CreateUser(userInput)
+	if userCreatingErr != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": userCreatingErr})
 	}
 
 	tokenString, err := token.CreateToken(userInput.PhoneNumber)
@@ -77,7 +51,7 @@ func RegisterHandler(c *gin.Context) {
 // @Produce json
 // @Param answer body models.UserRegister true "User object"
 // @Success 201 {object} string
-// @Router /login [post]
+// @Router /auth/login [post]
 func LoginHandler(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
@@ -115,7 +89,7 @@ func LoginHandler(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} string
-// @Router /protected [get]
+// @Router /auth/protected [get]
 func ProtectedHandler(c *gin.Context) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {

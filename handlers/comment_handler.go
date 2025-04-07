@@ -5,17 +5,17 @@ import (
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"regexp"
 )
 
 // DeleteComment
 // @Tags comment
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param comment body models.Comment true "Comment object"
 // @Success 201 {object} models.Comment
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /comment/delete [delete]
+// @Router /api/comment/delete [delete]
 func DeleteComment(c *gin.Context) {
 	var comment models.Comment
 	if err := c.ShouldBindJSON(&comment); err != nil {
@@ -33,11 +33,10 @@ func DeleteComment(c *gin.Context) {
 // @Tags comment
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param comment body models.Comment true "Comment object"
 // @Success 201 {object} models.Comment
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /comment/add [post]
+// @Router /api/comment/add [post]
 func AddComment(c *gin.Context) {
 	var comment models.Comment
 
@@ -66,6 +65,17 @@ func AddComment(c *gin.Context) {
 		}
 	} else {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid parent type"})
+		return
+	}
+
+	// regex can be updated
+	matchString, err := regexp.MatchString("^[]0-9a-zA-Z,!^`@{}=().;/~_|[-]+$", comment.Description)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "error checking description"})
+		return
+	}
+	if matchString == true {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Description containing bad characters"})
 		return
 	}
 

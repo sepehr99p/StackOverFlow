@@ -11,11 +11,10 @@ import (
 // @Tags tag
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param tag body models.Tag true "Tag object"
 // @Success 201 {object} models.Tag
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /tag/add [post]
+// @Router /api/tag/add [post]
 func AddTag(c *gin.Context) {
 	var tag models.Tag
 	if err := c.ShouldBindJSON(&tag); err != nil {
@@ -36,10 +35,9 @@ func AddTag(c *gin.Context) {
 // @Tags tag
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} models.Tag
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /tag/questions/all [get]
+// @Router /api/tag/questions/all [get]
 func FetchTagQuestions(c *gin.Context) {
 	tagName := c.Param("name")
 	var questions []models.Question

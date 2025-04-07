@@ -10,41 +10,45 @@ func SetupRouter() *gin.Engine {
 
 	router := gin.Default()
 
-	router.POST("/register", handlers.RegisterHandler)
-	router.POST("/login", handlers.LoginHandler)
-	router.GET("/protected", handlers.ProtectedHandler)
+	authRoute := router.Group("/auth")
+	authRoute.POST("/register", handlers.RegisterHandler)
+	authRoute.POST("/login", handlers.LoginHandler)
+	authRoute.GET("/protected", handlers.ProtectedHandler)
 
-	adminRoutes := router.Group("/admin")
-
-	adminRoutes.Use(middleware.AdminMiddleware())
+	protected := router.Group("/api")
+	protected.Use(middleware.JWTAuthMiddleware())
 	{
-		router.DELETE("/questions/delete", handlers.DeleteQuestion)
+		// Question routes
+		protected.GET("/questions/:id", handlers.FetchQuestionById)
+		protected.GET("/questions/all", handlers.FetchQuestions)
+		protected.POST("/questions/add", handlers.PostQuestion)
+		protected.GET("/questions/my/:user_id", handlers.FetchMyQuestions)
+		protected.GET("/questions/voteUp/:id}", handlers.VoteUpQuestion)
+
+		// Answer routes
+		protected.POST("/answer/add", handlers.AddAnswer)
+		protected.GET("/answer/correctAnswer/:id", handlers.CorrectAnswer)
+		protected.GET("/answer/voteUp/:id}", handlers.VoteUpAnswer)
+		protected.GET("/answer/delete", handlers.DeleteAnswer)
+
+		//comment routes
+		protected.POST("/comment/add", handlers.AddComment)
+		protected.DELETE("/comment/delete", handlers.DeleteComment)
+
+		//tag routes
+		protected.POST("/tag/add", handlers.AddTag)
+		protected.POST("/tag/questions/all", handlers.FetchTagQuestions)
 	}
 
-	// Question routes
-	router.GET("/questions/:id", handlers.FetchQuestionById)
-	router.GET("/questions/all", handlers.FetchQuestions)
-	router.POST("/questions/add", handlers.PostQuestion)
-	router.GET("/questions/my/:user_id", handlers.FetchMyQuestions)
-	router.GET("/questions/voteUp/:id}", handlers.VoteUpQuestion)
+	adminRoutes := router.Group("/admin")
+	adminRoutes.Use(middleware.AdminMiddleware())
+	{
+		adminRoutes.DELETE("/questions/delete", handlers.DeleteQuestion)
 
-	// User routes
-	router.POST("/user/add", handlers.AddUser)
-	router.DELETE("/user/delete", handlers.DeleteUser)
-
-	// Answer routes
-	router.POST("/answer/add", handlers.AddAnswer)
-	router.GET("/answer/correctAnswer/:id", handlers.CorrectAnswer)
-	router.GET("/answer/voteUp/:id}", handlers.VoteUpAnswer)
-	router.GET("/answer/delete", handlers.DeleteAnswer)
-
-	//comment routes
-	router.POST("/comment/add", handlers.AddComment)
-	router.DELETE("/comment/delete", handlers.DeleteComment)
-
-	//tag routes
-	router.POST("/tag/add", handlers.AddTag)
-	router.POST("/tag/questions/all", handlers.FetchTagQuestions)
+		// User routes
+		adminRoutes.POST("/user/add", handlers.AddUser)
+		adminRoutes.DELETE("/user/delete", handlers.DeleteUser)
+	}
 
 	return router
 }
