@@ -16,7 +16,7 @@ import (
 // @Produce json
 // @Param answer body models.UserRegister true "User object"
 // @Success 201 {object} string
-// @Router /register [post]
+// @Router /auth/register [post]
 func RegisterHandler(c *gin.Context) {
 	var userInput models.UserRegister
 	if err := c.ShouldBindJSON(&userInput); err != nil {
@@ -51,7 +51,7 @@ func RegisterHandler(c *gin.Context) {
 // @Produce json
 // @Param answer body models.UserRegister true "User object"
 // @Success 201 {object} string
-// @Router /login [post]
+// @Router /auth/login [post]
 func LoginHandler(c *gin.Context) {
 
 	c.Header("Content-Type", "application/json")
@@ -89,7 +89,7 @@ func LoginHandler(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} string
-// @Router /protected [get]
+// @Router /auth/protected [get]
 func ProtectedHandler(c *gin.Context) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {

@@ -12,11 +12,10 @@ import (
 // @Tags comment
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param comment body models.Comment true "Comment object"
 // @Success 201 {object} models.Comment
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /comment/delete [delete]
+// @Router /api/comment/delete [delete]
 func DeleteComment(c *gin.Context) {
 	var comment models.Comment
 	if err := c.ShouldBindJSON(&comment); err != nil {
@@ -34,11 +33,10 @@ func DeleteComment(c *gin.Context) {
 // @Tags comment
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param comment body models.Comment true "Comment object"
 // @Success 201 {object} models.Comment
-// @Failure 400 {object} map[string]string
-// @Failure 500 {object} map[string]string
-// @Router /comment/add [post]
+// @Router /api/comment/add [post]
 func AddComment(c *gin.Context) {
 	var comment models.Comment
 

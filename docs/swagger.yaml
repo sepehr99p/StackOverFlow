@@ -87,11 +87,56 @@ definitions:
 info:
   contact: {}
 paths:
-  /answer/add:
+  /admin/user/add:
     post:
       consumes:
       - application/json
       parameters:
+      - description: Tag object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+      tags:
+      - user
+  /admin/user/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Tag object
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+      tags:
+      - user
+  /api/answer/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Answer object
         in: body
         name: answer
@@ -107,37 +152,54 @@ paths:
             $ref: '#/definitions/models.Answer'
       tags:
       - answer
-  /answer/correctAnswer/{id}:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Answer'
-      tags:
-      - answer
-  /answer/delete:
-    delete:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Answer'
-      tags:
-      - answer
-  /answer/voteUp/{id}:
+  /api/answer/correctAnswer/{id}:
     get:
       consumes:
       - application/json
       parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Answer'
+      tags:
+      - answer
+  /api/answer/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Answer'
+      tags:
+      - answer
+  /api/answer/voteUp/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: id
         in: path
         name: id
@@ -150,19 +212,18 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Answer'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - answer
-  /comment/add:
+  /api/comment/add:
     post:
       consumes:
       - application/json
       parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Comment object
         in: body
         name: comment
@@ -176,25 +237,18 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Comment'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - comment
-  /comment/delete:
+  /api/comment/delete:
     delete:
       consumes:
       - application/json
       parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: Comment object
         in: body
         name: comment
@@ -208,21 +262,192 @@ paths:
           description: Created
           schema:
             $ref: '#/definitions/models.Comment'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       tags:
       - comment
-  /login:
+  /api/questions/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Question Data
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.Question'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+      tags:
+      - questions
+  /api/questions/all:
+    get:
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+      tags:
+      - questions
+  /api/questions/delete:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Question object
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/models.Question'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+      tags:
+      - questions
+  /api/questions/my/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+      tags:
+      - questions
+  /api/questions/my/{user_id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: user_id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+      tags:
+      - questions
+  /api/questions/voteUp/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+      tags:
+      - questions
+  /api/tag/add:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Tag object
+        in: body
+        name: tag
+        required: true
+        schema:
+          $ref: '#/definitions/models.Tag'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tag'
+      tags:
+      - tag
+  /api/tag/questions/all:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tag'
+      tags:
+      - tag
+  /auth/login:
     post:
       consumes:
       - application/json
@@ -242,7 +467,7 @@ paths:
             type: string
       tags:
       - auth
-  /protected:
+  /auth/protected:
     get:
       consumes:
       - application/json
@@ -261,115 +486,7 @@ paths:
             type: string
       tags:
       - auth
-  /questions/add:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Question Data
-        in: body
-        name: question
-        required: true
-        schema:
-          $ref: '#/definitions/models.Question'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Question'
-      tags:
-      - questions
-  /questions/all:
-    get:
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Question'
-      tags:
-      - questions
-  /questions/delete:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: Question object
-        in: body
-        name: question
-        required: true
-        schema:
-          $ref: '#/definitions/models.Question'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Question'
-      tags:
-      - questions
-  /questions/my/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Question'
-      tags:
-      - questions
-  /questions/my/{user_id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: user_id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Question'
-      tags:
-      - questions
-  /questions/voteUp/{id}:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Question'
-      tags:
-      - questions
-  /register:
+  /auth/register:
     post:
       consumes:
       - application/json
@@ -389,79 +506,6 @@ paths:
             type: string
       tags:
       - auth
-  /tag/add:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Tag object
-        in: body
-        name: tag
-        required: true
-        schema:
-          $ref: '#/definitions/models.Tag'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Tag'
-      tags:
-      - tag
-  /tag/questions/all:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Tag'
-      tags:
-      - tag
-  /user/add:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Tag object
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.User'
-      tags:
-      - user
-  /user/delete:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: Tag object
-        in: body
-        name: user
-        required: true
-        schema:
-          $ref: '#/definitions/models.User'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.User'
-      tags:
-      - user
 securityDefinitions:
   BearerAuth:
     in: header

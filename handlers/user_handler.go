@@ -14,7 +14,7 @@ import (
 // @Produce json
 // @Param user body models.User true "Tag object"
 // @Success 201 {object} models.User
-// @Router /user/add [post]
+// @Router /admin/user/add [post]
 func AddUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -37,7 +37,7 @@ func AddUser(c *gin.Context) {
 // @Produce json
 // @Param user body models.User true "Tag object"
 // @Success 201 {object} models.User
-// @Router /user/delete [delete]
+// @Router /admin/user/delete [delete]
 func DeleteUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {

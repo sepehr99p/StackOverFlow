@@ -13,8 +13,9 @@ import (
 // @Tags answer
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} models.Answer
-// @Router /answer/delete [delete]
+// @Router /api/answer/delete [delete]
 func DeleteAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
@@ -35,8 +36,9 @@ func DeleteAnswer(c *gin.Context) {
 // @Tags answer
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} models.Answer
-// @Router /answer/correctAnswer/{id} [get]
+// @Router /api/answer/correctAnswer/{id} [get]
 func CorrectAnswer(c *gin.Context) {
 	//todo : check if user has asked the question to mark it as correct
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
@@ -57,9 +59,10 @@ func CorrectAnswer(c *gin.Context) {
 // @Tags answer
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param answer body models.Answer true "Answer object"
 // @Success 201 {object} models.Answer
-// @Router /answer/add [post]
+// @Router /api/answer/add [post]
 func AddAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
@@ -102,10 +105,10 @@ func AddAnswer(c *gin.Context) {
 // @Tags answer
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param id path string true "id"
 // @Success 201 {object} models.Answer
-// @Failure 400 {object} map[string]string
-// @Router /answer/voteUp/{id} [get]
+// @Router /api/answer/voteUp/{id} [get]
 func VoteUpAnswer(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 

@@ -12,9 +12,10 @@ import (
 // @Tags questions
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param id path string true "id"
 // @Success 201 {object} models.Question
-// @Router /questions/voteUp/{id} [get]
+// @Router /api/questions/voteUp/{id} [get]
 func VoteUpQuestion(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 
@@ -37,9 +38,10 @@ func VoteUpQuestion(c *gin.Context) {
 // @Tags questions
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param id path string true "id"
 // @Success 201 {object} models.Question
-// @Router /questions/my/{id} [get]
+// @Router /api/questions/my/{id} [get]
 func FetchQuestionById(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 
@@ -68,8 +70,9 @@ func FetchQuestionById(c *gin.Context) {
 // FetchQuestions
 // @Tags questions
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} models.Question
-// @Router /questions/all [get]
+// @Router /api/questions/all [get]
 func FetchQuestions(c *gin.Context) {
 	var questions []models.Question
 	result := database.DB.Find(&questions)
@@ -92,9 +95,10 @@ func FetchQuestions(c *gin.Context) {
 // @Tags questions
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param question body models.Question true "Question object"
 // @Success 201 {object} models.Question
-// @Router /questions/delete [delete]
+// @Router /api/questions/delete [delete]
 func DeleteQuestion(c *gin.Context) {
 	var question models.Question
 
@@ -116,9 +120,10 @@ func DeleteQuestion(c *gin.Context) {
 // @Tags questions
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param question body models.Question true "Question Data"
 // @Success 201 {object} models.Question
-// @Router /questions/add [post]
+// @Router /api/questions/add [post]
 func PostQuestion(c *gin.Context) {
 	var question models.Question
 
@@ -146,9 +151,10 @@ func PostQuestion(c *gin.Context) {
 // @Tags questions
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "Bearer Token"
 // @Param id path string true "user_id"
 // @Success 201 {object} models.Question
-// @Router /questions/my/{user_id} [get]
+// @Router /api/questions/my/{user_id} [get]
 func FetchMyQuestions(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)
 	var userToFind = models.User{UserId: int(id)}
