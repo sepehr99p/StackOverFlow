@@ -88,7 +88,7 @@ func FetchQuestions(c *gin.Context) {
 		return
 	}
 
-	var questionResponses = fetchQuestionsWithAnswersAndComments(questions)
+	var questionResponses = database.FetchQuestionsWithAnswersAndComments(questions)
 	c.IndentedJSON(http.StatusOK, questionResponses)
 }
 
@@ -176,20 +176,7 @@ func FetchMyQuestions(c *gin.Context) {
 		return
 	}
 
-	var questionResponses = fetchQuestionsWithAnswersAndComments(questions)
+	var questionResponses = database.FetchQuestionsWithAnswersAndComments(questions)
 
 	c.IndentedJSON(http.StatusOK, questionResponses)
-}
-
-func fetchQuestionsWithAnswersAndComments(questions []models.Question) []gin.H {
-	var questionResponses []gin.H
-	for _, question := range questions {
-		questionResponse := gin.H{"question": question}
-		questionResponse["answers"] = FetchAnswersForQuestion(strconv.FormatInt(question.QuestionId, 10))
-		var comments []models.Comment
-		database.DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
-		questionResponse["comments"] = comments
-		questionResponses = append(questionResponses, questionResponse)
-	}
-	return questionResponses
 }

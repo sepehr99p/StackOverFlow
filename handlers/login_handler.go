@@ -10,32 +10,6 @@ import (
 	"strings"
 )
 
-func isUserAlreadyExist(phoneNumber string) bool {
-	var count int64
-	database.DB.Model(&models.User{}).
-		Where("user_name = ?", phoneNumber).
-		Count(&count)
-	return count > 0
-}
-
-func createUser(user models.UserRegister) *string {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		message := "Error hashing password"
-		return &message
-	}
-	newUser := models.User{
-		UserName: user.PhoneNumber,
-		Password: string(hashedPassword),
-	}
-	result := database.DB.Create(&newUser)
-	if result.Error != nil {
-		message := result.Error.Error()
-		return &message
-	}
-	return nil
-}
-
 // RegisterHandler
 // @Tags auth
 // @Accept json
@@ -52,12 +26,12 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	if isUserAlreadyExist(userInput.PhoneNumber) {
+	if database.IsUserAlreadyExist(userInput.PhoneNumber) {
 		c.IndentedJSON(http.StatusConflict, gin.H{"message": "User already exists"})
 		return
 	}
 
-	var userCreatingResult = createUser(userInput)
+	var userCreatingResult = database.CreateUser(userInput)
 	if userCreatingResult != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": userCreatingResult})
 	}
