@@ -68,11 +68,20 @@ definitions:
     properties:
       is_admin:
         type: boolean
+      password:
+        type: string
       reputation:
         type: integer
       user_id:
         type: integer
       user_name:
+        type: string
+    type: object
+  models.UserRegister:
+    properties:
+      password:
+        type: string
+      phone_number:
         type: string
     type: object
 info:
@@ -225,6 +234,45 @@ paths:
             type: object
       tags:
       - comment
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User object
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      tags:
+      - auth
+  /protected:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      tags:
+      - auth
   /questions/add:
     post:
       consumes:
@@ -393,6 +441,26 @@ paths:
             type: object
       tags:
       - questions
+  /register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: User object
+        in: body
+        name: answer
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserRegister'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+      tags:
+      - auth
   /tag/add:
     post:
       consumes:
@@ -514,4 +582,9 @@ paths:
             type: object
       tags:
       - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
