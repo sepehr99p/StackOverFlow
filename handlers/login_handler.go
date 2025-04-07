@@ -10,6 +10,32 @@ import (
 	"strings"
 )
 
+func isUserAlreadyExist(phoneNumber string) bool {
+	var count int64
+	database.DB.Model(&models.User{}).
+		Where("user_name = ?", phoneNumber).
+		Count(&count)
+	return count > 0
+}
+
+func createUser(user models.UserRegister) *string {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		message := "Error hashing password"
+		return &message
+	}
+	newUser := models.User{
+		UserName: user.PhoneNumber,
+		Password: string(hashedPassword),
+	}
+	result := database.DB.Create(&newUser)
+	if result.Error != nil {
+		message := result.Error.Error()
+		return &message
+	}
+	return nil
+}
+
 // RegisterHandler
 // @Tags auth
 // @Accept json
@@ -26,35 +52,17 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	var count int64
-	database.DB.Model(&models.User{}).
-		Where("user_name = ?", userInput.PhoneNumber).
-		Count(&count)
-
-	if count > 0 {
+	if isUserAlreadyExist(userInput.PhoneNumber) {
 		c.IndentedJSON(http.StatusConflict, gin.H{"message": "User already exists"})
 		return
 	}
 
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(userInput.Password), bcrypt.DefaultCost)
-	if err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error hashing password"})
-		return
+	var userCreatingResult = createUser(userInput)
+	if userCreatingResult != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": userCreatingResult})
 	}
 
-	newUser := models.User{
-		UserName: userInput.PhoneNumber,
-		Password: string(hashedPassword),
-	}
-	result := database.DB.Create(&newUser)
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{
-			"message": "Error creating user", "error": result.Error.Error(),
-		})
-		return
-	}
-
-	tokenString, err := token.CreateToken(newUser.UserName)
+	tokenString, err := token.CreateToken(userInput.PhoneNumber)
 	if err != nil {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
 		return
@@ -68,7 +76,7 @@ func RegisterHandler(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param answer body models.UserRegister true "User object"
-// @Success 201 {object} models.string
+// @Success 201 {object} string
 // @Router /login [post]
 func LoginHandler(c *gin.Context) {
 

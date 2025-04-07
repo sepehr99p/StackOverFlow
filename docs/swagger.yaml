@@ -244,14 +244,14 @@ paths:
         name: answer
         required: true
         schema:
-          $ref: '#/definitions/models.User'
+          $ref: '#/definitions/models.UserRegister'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.User'
+            type: string
       tags:
       - auth
   /protected:
