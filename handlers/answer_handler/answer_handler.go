@@ -1,7 +1,8 @@
-package handlers
+package answer_handler
 
 import (
 	"Learning/database"
+	"Learning/helper"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,59 +11,77 @@ import (
 )
 
 // DeleteAnswer
-// @Tags answer
+// @Tags answer_handler
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} models.Answer
-// @Router /api/answer/delete [delete]
+// @Router /api/answer_handler/delete [delete]
 func DeleteAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
 		return
 	}
-	//todo : check if user has permission to delete answer
+	//todo : check if user has permission to delete answer_handler
 
 	result := database.DB.Delete(&answer)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating answer"})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating answer_handler"})
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, answer)
 }
 
 // CorrectAnswer
-// @Tags answer
+// @Tags answer_handler
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
 // @Success 201 {object} models.Answer
-// @Router /api/answer/correctAnswer/{id} [get]
+// @Router /api/answer_handler/correctAnswer/{id} [get]
 func CorrectAnswer(c *gin.Context) {
-	//todo : check if user has asked the question to mark it as correct
+	//todo : check if user has asked the question_handler to mark it as correct
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	var answer models.Answer
 	if err := database.DB.Where("answer_id = ?", id).First(&answer).Error; err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "answer not found"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "answer_handler not found"})
 		return
 	}
-	answer.IsCorrectAnswer = true
-	if updateError := database.DB.Save(&answer).Error; updateError != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to update the answer"})
+
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, answer)
+
+	var question models.Question
+	if questionQueryError := database.DB.Where("question_id = ?", answer.QuestionId).First(&question).Error; questionQueryError != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to fetch answer's question"})
+		return
+	}
+
+	if user.UserId == question.UserId {
+		answer.IsCorrectAnswer = true
+		if updateError := database.DB.Save(&answer).Error; updateError != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to update the answer_handler"})
+			return
+		}
+		c.IndentedJSON(http.StatusOK, answer)
+	} else {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "only the user asked the question, may mark it as correct"})
+	}
+
 }
 
 // AddAnswer
-// @Tags answer
+// @Tags answer_handler
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
-// @Param answer body models.Answer true "Answer object"
+// @Param answer_handler body models.Answer true "Answer object"
 // @Success 201 {object} models.Answer
-// @Router /api/answer/add [post]
+// @Router /api/answer_handler/add [post]
 func AddAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
@@ -95,33 +114,7 @@ func AddAnswer(c *gin.Context) {
 
 	result := database.DB.Create(&answer)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating answer"})
-		return
-	}
-	c.IndentedJSON(http.StatusCreated, answer)
-}
-
-// VoteUpAnswer
-// @Tags answer
-// @Accept json
-// @Produce json
-// @Param Authorization header string true "Bearer Token"
-// @Param id path string true "id"
-// @Success 201 {object} models.Answer
-// @Router /api/answer/voteUp/{id} [get]
-func VoteUpAnswer(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-
-	var answer models.Question
-	result := database.DB.First(&answer, id)
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
-		return
-	}
-	//todo : check if user has enough reputation to vote up a answer
-	answer.Votes += 1
-	if updateResult := database.DB.Save(&answer).Error; updateResult != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating answer_handler"})
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, answer)

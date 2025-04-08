@@ -79,7 +79,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer/add": {
+        "/api/answer_handler/add": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -88,7 +88,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer"
+                    "answer_handler"
                 ],
                 "parameters": [
                     {
@@ -100,7 +100,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "Answer object",
-                        "name": "answer",
+                        "name": "answer_handler",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -118,7 +118,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer/correctAnswer/{id}": {
+        "/api/answer_handler/correctAnswer/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -127,7 +127,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer"
+                    "answer_handler"
                 ],
                 "parameters": [
                     {
@@ -148,7 +148,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer/delete": {
+        "/api/answer_handler/delete": {
             "delete": {
                 "consumes": [
                     "application/json"
@@ -157,7 +157,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer"
+                    "answer_handler"
                 ],
                 "parameters": [
                     {
@@ -178,7 +178,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer/voteUp/{id}": {
+        "/api/answer_handler/voteDown/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -187,7 +187,44 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer"
+                    "answer_handler"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Answer"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/answer_handler/voteUp/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "answer_handler"
                 ],
                 "parameters": [
                     {
@@ -314,7 +351,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "Question Data",
-                        "name": "question",
+                        "name": "question_handler",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -380,12 +417,42 @@ const docTemplate = `{
                     },
                     {
                         "description": "Question object",
-                        "name": "question",
+                        "name": "question_handler",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/models.Question"
                         }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Question"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/questions/my": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -420,43 +487,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.Question"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/questions/my/{user_id}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "questions"
-                ],
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Bearer Token",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "user_id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -592,7 +622,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "User object",
-                        "name": "answer",
+                        "name": "answer_handler",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -654,7 +684,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "User object",
-                        "name": "answer",
+                        "name": "answer_handler",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -717,7 +747,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "parent_type": {
-                    "description": "\"question\" or \"answer\"",
+                    "description": "\"question_handler\" or \"answer_handler\"",
                     "type": "string"
                 },
                 "user_id": {
@@ -802,13 +832,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        }
-    },
-    "securityDefinitions": {
-        "BearerAuth": {
-            "type": "apiKey",
-            "name": "Authorization",
-            "in": "header"
         }
     }
 }`

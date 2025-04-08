@@ -51,13 +51,13 @@ func AddComment(c *gin.Context) {
 		return
 	}
 
-	if comment.ParentType == "question" {
+	if comment.ParentType == "question_handler" {
 		var question models.Question
 		if err := database.DB.First(&question, comment.ParentId).Error; err != nil {
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Question not found"})
 			return
 		}
-	} else if comment.ParentType == "answer" {
+	} else if comment.ParentType == "answer_handler" {
 		var answer models.Answer
 		if err := database.DB.First(&answer, comment.ParentId).Error; err != nil {
 			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Answer not found"})
