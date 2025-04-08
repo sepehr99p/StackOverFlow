@@ -46,9 +46,7 @@ func FetchQuestions(c *gin.Context) {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "No questions found"})
 		return
 	}
-
-	var questionResponses = database.FetchQuestionsWithAnswersAndComments(questions)
-	c.IndentedJSON(http.StatusOK, questionResponses)
+	c.IndentedJSON(http.StatusOK, database.FetchQuestionsWithAnswersAndComments(questions))
 }
 
 // DeleteQuestion
@@ -61,7 +59,6 @@ func FetchQuestions(c *gin.Context) {
 // @Router /api/questions/delete [delete]
 func DeleteQuestion(c *gin.Context) {
 	var question models.Question
-
 	if err := c.ShouldBindJSON(&question); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
 		return
