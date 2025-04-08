@@ -28,9 +28,6 @@ jobs:
         go mod tidy
         go mod download
 
-    - name: initialize swagger 
-      run: swag init
-
     - name: Build
       run: go build -v ./...
 
