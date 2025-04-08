@@ -28,6 +28,7 @@ services:
       DB_PASSWORD: devpass
       DB_PORT: 3306
       DB_NAME: stackoverflow
+      JWT_SECRET : someSecretKey
     networks:
       - appnet
 
