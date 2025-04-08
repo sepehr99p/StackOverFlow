@@ -10,13 +10,13 @@ import (
 )
 
 // VoteUpAnswer
-// @Tags answer_handler
+// @Tags answer
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
 // @Param id path string true "id"
 // @Success 201 {object} models.Answer
-// @Router /api/answer_handler/voteUp/{id} [get]
+// @Router /api/answer/voteUp/{id} [get]
 func VoteUpAnswer(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	var answer models.Question
@@ -44,13 +44,13 @@ func VoteUpAnswer(c *gin.Context) {
 }
 
 // VoteDownAnswer
-// @Tags answer_handler
+// @Tags answer
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
 // @Param id path string true "id"
 // @Success 201 {object} models.Answer
-// @Router /api/answer_handler/voteDown/{id} [get]
+// @Router /api/answer/voteDown/{id} [get]
 func VoteDownAnswer(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	var answer models.Question
