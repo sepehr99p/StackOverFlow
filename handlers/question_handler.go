@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"Learning/database"
+	"Learning/helper"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -25,13 +26,54 @@ func VoteUpQuestion(c *gin.Context) {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
 		return
 	}
-	//todo : check if user has enough reputation to vote up a question
-	question.Votes += 1
-	if updateResult := database.DB.Save(&question).Error; updateResult != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
-	c.IndentedJSON(http.StatusCreated, question)
+	if user.Reputation > 30 {
+		question.Votes += 1
+		if updateResult := database.DB.Save(&question).Error; updateResult != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
+			return
+		}
+		c.IndentedJSON(http.StatusCreated, question)
+	} else {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation"})
+	}
+}
+
+// VoteDownQuestion
+// @Tags questions
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer Token"
+// @Param id path string true "id"
+// @Success 201 {object} models.Question
+// @Router /api/questions/voteDown/{id} [get]
+func VoteDownQuestion(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	var question models.Question
+	result := database.DB.First(&question, id)
+	if result.Error != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
+		return
+	}
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
+		return
+	}
+	if user.Reputation > 30 {
+		question.Votes -= 1
+		if updateResult := database.DB.Save(&question).Error; updateResult != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
+			return
+		}
+		c.IndentedJSON(http.StatusCreated, question)
+	} else {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation"})
+	}
 }
 
 // FetchQuestionById
@@ -43,11 +85,16 @@ func VoteUpQuestion(c *gin.Context) {
 // @Success 201 {object} models.Question
 // @Router /api/questions/my/{id} [get]
 func FetchQuestionById(c *gin.Context) {
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
+		return
+	}
+
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 
 	var question models.Question
-	result := database.DB.First(&question, id)
-	if result.Error != nil {
+	if err := database.DB.First(&question, id).Error; err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
 		return
 	}
@@ -59,6 +106,7 @@ func FetchQuestionById(c *gin.Context) {
 	database.DB.Where("parent_id = ? AND parent_type = ?", id, "question").Find(&comments)
 
 	response := gin.H{
+		"user":     user.UserName,
 		"question": question,
 		"answers":  answers,
 		"comments": comments,
@@ -126,15 +174,12 @@ func DeleteQuestion(c *gin.Context) {
 // @Router /api/questions/add [post]
 func PostQuestion(c *gin.Context) {
 	var question models.Question
-
 	if err := c.ShouldBindJSON(&question); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
 		return
 	}
-
-	var user models.User
-	if err := database.DB.First(&user, question.UserId).Error; err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "User does not exist"})
+	if helper.FetchUserFromToken(c.GetHeader("Authorization")) == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
 
@@ -152,16 +197,16 @@ func PostQuestion(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
-// @Param id path string true "user_id"
 // @Success 201 {object} models.Question
-// @Router /api/questions/my/{user_id} [get]
+// @Router /api/questions/my [get]
 func FetchMyQuestions(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("user_id"), 10, 64)
-	var userToFind = models.User{UserId: int(id)}
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
+		return
+	}
 	var questions []models.Question
-
-	result := database.DB.Model(&userToFind).Where("user_id = ?", id).Find(&questions)
-
+	result := database.DB.Model(&user).Find(&questions)
 	if result.Error != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving user's questions", "error": result.Error.Error()})
 		return
@@ -172,7 +217,5 @@ func FetchMyQuestions(c *gin.Context) {
 		return
 	}
 
-	var questionResponses = database.FetchQuestionsWithAnswersAndComments(questions)
-
-	c.IndentedJSON(http.StatusOK, questionResponses)
+	c.IndentedJSON(http.StatusOK, database.FetchQuestionsWithAnswersAndComments(questions))
 }

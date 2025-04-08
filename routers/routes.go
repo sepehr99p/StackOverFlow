@@ -22,13 +22,15 @@ func SetupRouter() *gin.Engine {
 		protected.GET("/questions/:id", handlers.FetchQuestionById)
 		protected.GET("/questions/all", handlers.FetchQuestions)
 		protected.POST("/questions/add", handlers.PostQuestion)
-		protected.GET("/questions/my/:user_id", handlers.FetchMyQuestions)
+		protected.GET("/questions/my", handlers.FetchMyQuestions)
 		protected.GET("/questions/voteUp/:id}", handlers.VoteUpQuestion)
+		protected.GET("/questions/voteDown/:id}", handlers.VoteDownQuestion)
 
 		// Answer routes
 		protected.POST("/answer/add", handlers.AddAnswer)
 		protected.GET("/answer/correctAnswer/:id", handlers.CorrectAnswer)
 		protected.GET("/answer/voteUp/:id}", handlers.VoteUpAnswer)
+		protected.GET("/answer/voteDown/:id}", handlers.VoteDownAnswer)
 		protected.GET("/answer/delete", handlers.DeleteAnswer)
 
 		//comment routes

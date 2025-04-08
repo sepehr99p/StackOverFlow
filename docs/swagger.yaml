@@ -190,6 +190,30 @@ paths:
             $ref: '#/definitions/models.Answer'
       tags:
       - answer
+  /api/answer/voteDown/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Answer'
+      tags:
+      - answer
   /api/answer/voteUp/{id}:
     get:
       consumes:
@@ -331,7 +355,7 @@ paths:
             $ref: '#/definitions/models.Question'
       tags:
       - questions
-  /api/questions/my/{id}:
+  /api/questions/my:
     get:
       consumes:
       - application/json
@@ -339,11 +363,6 @@ paths:
       - description: Bearer Token
         in: header
         name: Authorization
-        required: true
-        type: string
-      - description: id
-        in: path
-        name: id
         required: true
         type: string
       produces:
@@ -355,7 +374,7 @@ paths:
             $ref: '#/definitions/models.Question'
       tags:
       - questions
-  /api/questions/my/{user_id}:
+  /api/questions/my/{id}:
     get:
       consumes:
       - application/json
@@ -365,7 +384,7 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: user_id
+      - description: id
         in: path
         name: id
         required: true
@@ -506,9 +525,4 @@ paths:
             type: string
       tags:
       - auth
-securityDefinitions:
-  BearerAuth:
-    in: header
-    name: Authorization
-    type: apiKey
 swagger: "2.0"
