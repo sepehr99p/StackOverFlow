@@ -3,26 +3,34 @@ version: '3.8'
 services:
   db:
     image: mysql:8
+    container_name: mysql_db
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: test
+      MYSQL_ROOT_PASSWORD: rootpass
       MYSQL_DATABASE: stackoverflow
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: devpass
     ports:
-      - "3306:3306"
-    volumes:
-      - db_data:/var/lib/mysql
+      - "3307:3306"
+    networks:
+      - appnet
 
   app:
     build: .
+    container_name: go_app
     ports:
       - "8080:8080"
     depends_on:
       - db
     environment:
-      DB_USER: root
-      DB_PASSWORD: test
-      DB_NAME: stackoverflow
       DB_HOST: db
+      DB_USER: dev
+      DB_PASSWORD: devpass
+      DB_PORT: 3306
+      DB_NAME: stackoverflow
+      JWT_SECRET : someSecretKey
+    networks:
+      - appnet
 
-volumes:
-  db_data:
-
+networks:
+  appnet:
