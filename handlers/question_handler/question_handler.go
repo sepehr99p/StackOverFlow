@@ -16,36 +16,15 @@ import (
 // @Param Authorization header string true "Bearer Token"
 // @Param id path string true "id"
 // @Success 201 {object} models.Question
-// @Router /api/questions/my/{id} [get]
+// @Router /api/questions/{id} [get]
 func FetchQuestionById(c *gin.Context) {
-	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
-	if user == nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
-		return
-	}
-
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-
-	var question models.Question
+	var question []models.Question
 	if err := database.DB.First(&question, id).Error; err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
 		return
 	}
-
-	var answers []models.Answer
-	database.DB.Where("question_id = ?", id).Find(&answers)
-
-	var comments []models.Comment
-	database.DB.Where("parent_id = ? AND parent_type = ?", id, "questionx").Find(&comments)
-
-	response := gin.H{
-		"user":     user.UserName,
-		"question": question,
-		"answers":  answers,
-		"comments": comments,
-	}
-
-	c.IndentedJSON(http.StatusOK, response)
+	c.IndentedJSON(http.StatusOK, database.FetchQuestionsWithAnswersAndComments(question))
 }
 
 // FetchQuestions
