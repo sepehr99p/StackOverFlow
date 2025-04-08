@@ -1,0 +1,58 @@
+name: Docker Compose CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  docker-compose-ci:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+          MYSQL_DATABASE: stackoverflow
+          MYSQL_USER: dev
+          MYSQL_PASSWORD: devpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Set up Docker Compose
+      run: sudo apt-get install docker-compose -y
+
+    - name: Build and run containers
+      run: docker-compose up -d --build
+
+    - name: Wait for DB to be healthy
+      run: |
+        echo "Waiting for MySQL to be ready..."
+        until docker-compose exec -T db mysql -udev -pdevpass -e "SELECT 1"; do
+          sleep 2
+        done
+
+    - name: Check if app container is running
+      run: docker ps
+
+    - name: Run integration test (optional)
+      run: |
+        curl --retry 5 --retry-delay 5 --fail http://localhost:8080/health || exit 1
+
+    - name: Tear down
+      if: always()
+      run: docker-compose down
