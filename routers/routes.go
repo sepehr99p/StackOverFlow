@@ -2,6 +2,8 @@ package routes
 
 import (
 	"Learning/handlers"
+	"Learning/handlers/answer_handler"
+	"Learning/handlers/question_handler"
 	"Learning/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -19,19 +21,19 @@ func SetupRouter() *gin.Engine {
 	protected.Use(middleware.JWTAuthMiddleware())
 	{
 		// Question routes
-		protected.GET("/questions/:id", handlers.FetchQuestionById)
-		protected.GET("/questions/all", handlers.FetchQuestions)
-		protected.POST("/questions/add", handlers.PostQuestion)
-		protected.GET("/questions/my", handlers.FetchMyQuestions)
-		protected.GET("/questions/voteUp/:id}", handlers.VoteUpQuestion)
-		protected.GET("/questions/voteDown/:id}", handlers.VoteDownQuestion)
+		protected.GET("/questions/:id", question_handler.FetchQuestionById)
+		protected.GET("/questions/all", question_handler.FetchQuestions)
+		protected.POST("/questions/add", question_handler.PostQuestion)
+		protected.GET("/questions/my", question_handler.FetchMyQuestions)
+		protected.GET("/questions/voteUp/:id}", question_handler.VoteUpQuestion)
+		protected.GET("/questions/voteDown/:id}", question_handler.VoteDownQuestion)
 
 		// Answer routes
-		protected.POST("/answer/add", handlers.AddAnswer)
-		protected.GET("/answer/correctAnswer/:id", handlers.CorrectAnswer)
-		protected.GET("/answer/voteUp/:id}", handlers.VoteUpAnswer)
-		protected.GET("/answer/voteDown/:id}", handlers.VoteDownAnswer)
-		protected.GET("/answer/delete", handlers.DeleteAnswer)
+		protected.POST("/answer_handler/add", answer_handler.AddAnswer)
+		protected.GET("/answer_handler/correctAnswer/:id", answer_handler.CorrectAnswer)
+		protected.GET("/answer_handler/voteUp/:id}", answer_handler.VoteUpAnswer)
+		protected.GET("/answer_handler/voteDown/:id}", answer_handler.VoteDownAnswer)
+		protected.GET("/answer_handler/delete", answer_handler.DeleteAnswer)
 
 		//comment routes
 		protected.POST("/comment/add", handlers.AddComment)
@@ -45,7 +47,7 @@ func SetupRouter() *gin.Engine {
 	adminRoutes := router.Group("/admin")
 	adminRoutes.Use(middleware.AdminMiddleware())
 	{
-		adminRoutes.DELETE("/questions/delete", handlers.DeleteQuestion)
+		adminRoutes.DELETE("/questions/delete", question_handler.DeleteQuestion)
 
 		// User routes
 		adminRoutes.POST("/user/add", handlers.AddUser)

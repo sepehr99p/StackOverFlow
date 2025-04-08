@@ -1,4 +1,4 @@
-package handlers
+package question_handler
 
 import (
 	"Learning/database"
@@ -8,73 +8,6 @@ import (
 	"net/http"
 	"strconv"
 )
-
-// VoteUpQuestion
-// @Tags questions
-// @Accept json
-// @Produce json
-// @Param Authorization header string true "Bearer Token"
-// @Param id path string true "id"
-// @Success 201 {object} models.Question
-// @Router /api/questions/voteUp/{id} [get]
-func VoteUpQuestion(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-
-	var question models.Question
-	result := database.DB.First(&question, id)
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
-		return
-	}
-	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
-	if user == nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
-		return
-	}
-	if user.Reputation > 30 {
-		question.Votes += 1
-		if updateResult := database.DB.Save(&question).Error; updateResult != nil {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
-			return
-		}
-		c.IndentedJSON(http.StatusCreated, question)
-	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation"})
-	}
-}
-
-// VoteDownQuestion
-// @Tags questions
-// @Accept json
-// @Produce json
-// @Param Authorization header string true "Bearer Token"
-// @Param id path string true "id"
-// @Success 201 {object} models.Question
-// @Router /api/questions/voteDown/{id} [get]
-func VoteDownQuestion(c *gin.Context) {
-	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	var question models.Question
-	result := database.DB.First(&question, id)
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
-		return
-	}
-	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
-	if user == nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
-		return
-	}
-	if user.Reputation > 30 {
-		question.Votes -= 1
-		if updateResult := database.DB.Save(&question).Error; updateResult != nil {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
-			return
-		}
-		c.IndentedJSON(http.StatusCreated, question)
-	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation"})
-	}
-}
 
 // FetchQuestionById
 // @Tags questions
@@ -103,13 +36,13 @@ func FetchQuestionById(c *gin.Context) {
 	database.DB.Where("question_id = ?", id).Find(&answers)
 
 	var comments []models.Comment
-	database.DB.Where("parent_id = ? AND parent_type = ?", id, "question").Find(&comments)
+	database.DB.Where("parent_id = ? AND parent_type = ?", id, "question_handler").Find(&comments)
 
 	response := gin.H{
-		"user":     user.UserName,
-		"question": question,
-		"answers":  answers,
-		"comments": comments,
+		"user":             user.UserName,
+		"question_handler": question,
+		"answers":          answers,
+		"comments":         comments,
 	}
 
 	c.IndentedJSON(http.StatusOK, response)
@@ -144,7 +77,7 @@ func FetchQuestions(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
-// @Param question body models.Question true "Question object"
+// @Param question_handler body models.Question true "Question object"
 // @Success 201 {object} models.Question
 // @Router /api/questions/delete [delete]
 func DeleteQuestion(c *gin.Context) {
@@ -155,10 +88,10 @@ func DeleteQuestion(c *gin.Context) {
 		return
 	}
 
-	//todo : check if the user has permission to delete question
+	//todo : check if the user has permission to delete question_handler
 	result := database.DB.Delete(&question)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting question", "error": result.Error.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting question_handler", "error": result.Error.Error()})
 		return
 	}
 	c.IndentedJSON(http.StatusAccepted, question)
@@ -169,7 +102,7 @@ func DeleteQuestion(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
-// @Param question body models.Question true "Question Data"
+// @Param question_handler body models.Question true "Question Data"
 // @Success 201 {object} models.Question
 // @Router /api/questions/add [post]
 func PostQuestion(c *gin.Context) {
@@ -185,7 +118,7 @@ func PostQuestion(c *gin.Context) {
 
 	result := database.DB.Create(&question)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating question", "error": result.Error.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating question_handler", "error": result.Error.Error()})
 		return
 	}
 

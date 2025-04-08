@@ -14,7 +14,7 @@ import (
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param answer body models.UserRegister true "User object"
+// @Param answer_handler body models.UserRegister true "User object"
 // @Success 201 {object} string
 // @Router /auth/register [post]
 func RegisterHandler(c *gin.Context) {
@@ -49,7 +49,7 @@ func RegisterHandler(c *gin.Context) {
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param answer body models.UserRegister true "User object"
+// @Param answer_handler body models.UserRegister true "User object"
 // @Success 201 {object} string
 // @Router /auth/login [post]
 func LoginHandler(c *gin.Context) {

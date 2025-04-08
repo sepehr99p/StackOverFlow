@@ -28,7 +28,7 @@ definitions:
       parent_id:
         type: integer
       parent_type:
-        description: '"question" or "answer"'
+        description: '"question_handler" or "answer_handler"'
         type: string
       user_id:
         type: integer
@@ -139,7 +139,7 @@ paths:
         type: string
       - description: Answer object
         in: body
-        name: answer
+        name: answer_handler
         required: true
         schema:
           $ref: '#/definitions/models.Answer'
@@ -151,7 +151,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer
+      - answer_handler
   /api/answer/correctAnswer/{id}:
     get:
       consumes:
@@ -170,7 +170,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer
+      - answer_handler
   /api/answer/delete:
     delete:
       consumes:
@@ -189,7 +189,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer
+      - answer_handler
   /api/answer/voteDown/{id}:
     get:
       consumes:
@@ -213,7 +213,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer
+      - answer_handler
   /api/answer/voteUp/{id}:
     get:
       consumes:
@@ -237,7 +237,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer
+      - answer_handler
   /api/comment/add:
     post:
       consumes:
@@ -300,7 +300,7 @@ paths:
         type: string
       - description: Question Data
         in: body
-        name: question
+        name: question_handler
         required: true
         schema:
           $ref: '#/definitions/models.Question'
@@ -342,7 +342,7 @@ paths:
         type: string
       - description: Question object
         in: body
-        name: question
+        name: question_handler
         required: true
         schema:
           $ref: '#/definitions/models.Question'
@@ -473,7 +473,7 @@ paths:
       parameters:
       - description: User object
         in: body
-        name: answer
+        name: answer_handler
         required: true
         schema:
           $ref: '#/definitions/models.UserRegister'
@@ -512,7 +512,7 @@ paths:
       parameters:
       - description: User object
         in: body
-        name: answer
+        name: answer_handler
         required: true
         schema:
           $ref: '#/definitions/models.UserRegister'
