@@ -2,6 +2,7 @@ package answer_handler
 
 import (
 	"Learning/database"
+	"Learning/helper"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -47,12 +48,30 @@ func CorrectAnswer(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "answer_handler not found"})
 		return
 	}
-	answer.IsCorrectAnswer = true
-	if updateError := database.DB.Save(&answer).Error; updateError != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to update the answer_handler"})
+
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, answer)
+
+	var question models.Question
+	if questionQueryError := database.DB.Where("question_id = ?", answer.QuestionId).First(&question).Error; questionQueryError != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to fetch answer's question"})
+		return
+	}
+
+	if user.UserId == question.UserId {
+		answer.IsCorrectAnswer = true
+		if updateError := database.DB.Save(&answer).Error; updateError != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to update the answer_handler"})
+			return
+		}
+		c.IndentedJSON(http.StatusOK, answer)
+	} else {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "only the user asked the question, may mark it as correct"})
+	}
+
 }
 
 // AddAnswer
