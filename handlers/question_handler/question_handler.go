@@ -36,13 +36,13 @@ func FetchQuestionById(c *gin.Context) {
 	database.DB.Where("question_id = ?", id).Find(&answers)
 
 	var comments []models.Comment
-	database.DB.Where("parent_id = ? AND parent_type = ?", id, "question_handler").Find(&comments)
+	database.DB.Where("parent_id = ? AND parent_type = ?", id, "questionx").Find(&comments)
 
 	response := gin.H{
-		"user":             user.UserName,
-		"question_handler": question,
-		"answers":          answers,
-		"comments":         comments,
+		"user":     user.UserName,
+		"question": question,
+		"answers":  answers,
+		"comments": comments,
 	}
 
 	c.IndentedJSON(http.StatusOK, response)
@@ -77,7 +77,7 @@ func FetchQuestions(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
-// @Param question_handler body models.Question true "Question object"
+// @Param question body models.Question true "Question object"
 // @Success 201 {object} models.Question
 // @Router /api/questions/delete [delete]
 func DeleteQuestion(c *gin.Context) {
@@ -88,13 +88,23 @@ func DeleteQuestion(c *gin.Context) {
 		return
 	}
 
-	//todo : check if the user has permission to delete question_handler
-	result := database.DB.Delete(&question)
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting question_handler", "error": result.Error.Error()})
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
-	c.IndentedJSON(http.StatusAccepted, question)
+
+	if user.IsAdmin || user.UserId == question.UserId {
+		result := database.DB.Delete(&question)
+		if result.Error != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting question", "error": result.Error.Error()})
+			return
+		}
+		c.IndentedJSON(http.StatusAccepted, question)
+	} else {
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "you can only delete your own questions"})
+	}
+
 }
 
 // PostQuestion
@@ -102,7 +112,7 @@ func DeleteQuestion(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "Bearer Token"
-// @Param question_handler body models.Question true "Question Data"
+// @Param question body models.Question true "Question Data"
 // @Success 201 {object} models.Question
 // @Router /api/questions/add [post]
 func PostQuestion(c *gin.Context) {
@@ -118,7 +128,7 @@ func PostQuestion(c *gin.Context) {
 
 	result := database.DB.Create(&question)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating question_handler", "error": result.Error.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating question", "error": result.Error.Error()})
 		return
 	}
 
