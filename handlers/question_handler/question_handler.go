@@ -36,7 +36,7 @@ func FetchQuestionById(c *gin.Context) {
 	database.DB.Where("question_id = ?", id).Find(&answers)
 
 	var comments []models.Comment
-	database.DB.Where("parent_id = ? AND parent_type = ?", id, "question").Find(&comments)
+	database.DB.Where("parent_id = ? AND parent_type = ?", id, "questionx").Find(&comments)
 
 	response := gin.H{
 		"user":     user.UserName,
@@ -88,13 +88,23 @@ func DeleteQuestion(c *gin.Context) {
 		return
 	}
 
-	//todo : check if the user has permission to delete question
-	result := database.DB.Delete(&question)
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting question", "error": result.Error.Error()})
+	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+	if user == nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
-	c.IndentedJSON(http.StatusAccepted, question)
+
+	if user.IsAdmin || user.UserId == question.UserId {
+		result := database.DB.Delete(&question)
+		if result.Error != nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting question", "error": result.Error.Error()})
+			return
+		}
+		c.IndentedJSON(http.StatusAccepted, question)
+	} else {
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "you can only delete your own questions"})
+	}
+
 }
 
 // PostQuestion
