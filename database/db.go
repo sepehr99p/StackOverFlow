@@ -4,11 +4,10 @@ import (
 	"Learning/models"
 	"fmt"
 	"github.com/joho/godotenv"
-	"log"
-	"os"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
+	"os"
 )
 
 var DB *gorm.DB
@@ -31,7 +30,7 @@ func ConnectDatabase() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	err = DB.AutoMigrate(&models.User{}, &models.Question{}, &models.Answer{}, &models.Comment{}, &models.Tag{})
+	err = DB.AutoMigrate(&models.User{}, &models.Question{}, &models.Answer{}, &models.Comment{}, &models.Tag{}, &models.Log{})
 	if err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}
