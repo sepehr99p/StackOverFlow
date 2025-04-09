@@ -2,6 +2,7 @@ package question_handler
 
 import (
 	"Learning/database"
+	"Learning/database/db_helper"
 	"Learning/helper"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
@@ -31,16 +32,18 @@ func VoteUpQuestion(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
-	if user.Reputation > 30 {
-		question.Votes += 1
-		if updateResult := database.DB.Save(&question).Error; updateResult != nil {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
-			return
-		}
-		c.IndentedJSON(http.StatusCreated, question)
-	} else {
+
+	if user.Reputation < 30 {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation"})
+		return
 	}
+
+	err := db_helper.VoteUpQuestion(&question)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "question voted up"})
 }
 
 // VoteDownQuestion
@@ -64,14 +67,15 @@ func VoteDownQuestion(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 		return
 	}
-	if user.Reputation > 30 {
-		question.Votes -= 1
-		if updateResult := database.DB.Save(&question).Error; updateResult != nil {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
-			return
-		}
-		c.IndentedJSON(http.StatusCreated, question)
-	} else {
+	if user.Reputation < 30 {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation"})
+		return
 	}
+
+	err := db_helper.VoteDownQuestion(&question)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "question voted down"})
+
 }

@@ -2,6 +2,7 @@ package answer_handler
 
 import (
 	"Learning/database"
+	"Learning/database/db_helper"
 	"Learning/helper"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
@@ -19,10 +20,10 @@ import (
 // @Router /api/answer/voteUp/{id} [get]
 func VoteUpAnswer(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	var answer models.Question
+	var answer models.Answer
 	result := database.DB.First(&answer, id)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Answer not found"})
 		return
 	}
 	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
@@ -31,16 +32,17 @@ func VoteUpAnswer(c *gin.Context) {
 		return
 	}
 
-	if user.Reputation > 30 {
-		answer.Votes += 1
-		if updateResult := database.DB.Save(&answer).Error; updateResult != nil {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
-			return
-		}
-		c.IndentedJSON(http.StatusCreated, answer)
-	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation to vote"})
+	if user.Reputation < 30 {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Not enough reputation to vote"})
+		return
 	}
+
+	err := db_helper.VoteUpAnswerWithOwner(&answer)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "answer voted up"})
 }
 
 // VoteDownAnswer
@@ -53,10 +55,10 @@ func VoteUpAnswer(c *gin.Context) {
 // @Router /api/answer/voteDown/{id} [get]
 func VoteDownAnswer(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	var answer models.Question
+	var answer models.Answer
 	result := database.DB.First(&answer, id)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Question not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Answer not found"})
 		return
 	}
 	user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
@@ -65,14 +67,15 @@ func VoteDownAnswer(c *gin.Context) {
 		return
 	}
 
-	if user.Reputation > 30 {
-		answer.Votes -= 1
-		if updateResult := database.DB.Save(&answer).Error; updateResult != nil {
-			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to vote up"})
-			return
-		}
-		c.IndentedJSON(http.StatusCreated, answer)
-	} else {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "not enough reputation to vote"})
+	if user.Reputation < 30 {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Not enough reputation to vote"})
+		return
 	}
+
+	err := db_helper.VoteDownAnswerWithOwner(&answer)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "answer voted down"})
 }

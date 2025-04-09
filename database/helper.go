@@ -10,10 +10,10 @@ import (
 func FetchQuestionsWithAnswersAndComments(questions []models.Question) []gin.H {
 	var questionResponses []gin.H
 	for _, question := range questions {
-		questionResponse := gin.H{"question_handler": question}
+		questionResponse := gin.H{"question": question}
 		questionResponse["answers"] = FetchAnswersForQuestion(strconv.FormatInt(question.QuestionId, 10))
 		var comments []models.Comment
-		DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question_handler").Find(&comments)
+		DB.Where("parent_id = ? AND parent_type = ?", question.QuestionId, "question").Find(&comments)
 		questionResponse["comments"] = comments
 		questionResponses = append(questionResponses, questionResponse)
 	}
@@ -26,11 +26,11 @@ func FetchAnswersForQuestion(questionId string) []gin.H {
 	var answersWithComments []gin.H
 	for _, answer := range answers {
 		var answerComments []models.Comment
-		DB.Where("parent_id = ? AND parent_type = ?", answer.AnswerId, "answer_handler").Find(&answerComments)
+		DB.Where("parent_id = ? AND parent_type = ?", answer.AnswerId, "answer").Find(&answerComments)
 
 		answerResponse := gin.H{
-			"answer_handler": answer,
-			"comments":       answerComments,
+			"answer":   answer,
+			"comments": answerComments,
 		}
 		answersWithComments = append(answersWithComments, answerResponse)
 	}
