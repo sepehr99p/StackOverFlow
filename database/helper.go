@@ -2,6 +2,7 @@ package database
 
 import (
 	"Learning/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"strconv"
@@ -61,4 +62,11 @@ func CreateUser(user models.UserRegister) *string {
 		return &message
 	}
 	return nil
+}
+
+func SaveLog(log *models.Log) {
+	loggingResult := DB.Create(log)
+	if loggingResult.Error != nil {
+		fmt.Printf("failed to save log %s\n", loggingResult.Error.Error())
+	}
 }

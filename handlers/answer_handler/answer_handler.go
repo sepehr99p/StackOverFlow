@@ -2,8 +2,10 @@ package answer_handler
 
 import (
 	"Learning/database"
+	"Learning/database/db_helper"
 	"Learning/helper"
 	"Learning/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"regexp"
@@ -69,16 +71,26 @@ func CorrectAnswer(c *gin.Context) {
 		return
 	}
 
-	if user.UserId == question.UserId {
-		answer.IsCorrectAnswer = true
-		if updateError := database.DB.Save(&answer).Error; updateError != nil {
-			c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "failed to update the answer"})
-			return
-		}
-		c.IndentedJSON(http.StatusOK, answer)
-	} else {
+	if user.UserId != question.UserId {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "only the user asked the question, may mark it as correct"})
+		return
 	}
+
+	err := db_helper.MarkAnswerAsCorrect(&answer)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
+		return
+	}
+	log := models.Log{
+		UserID:           uint(user.UserId),
+		Action:           "mark_answer_as_correct",
+		EntityType:       "answer",
+		EntityID:         uint(answer.AnswerId),
+		ReputationChange: 10,
+		Description:      fmt.Sprintf("User gained 10 reputation for vote up on answer %d", answer.AnswerId),
+	}
+	database.SaveLog(&log)
+	c.IndentedJSON(http.StatusOK, &answer)
 
 }
 
