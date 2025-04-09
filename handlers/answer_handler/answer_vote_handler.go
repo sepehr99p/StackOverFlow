@@ -5,6 +5,7 @@ import (
 	"Learning/database/db_helper"
 	"Learning/helper"
 	"Learning/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -42,6 +43,15 @@ func VoteUpAnswer(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
 		return
 	}
+	log := models.Log{
+		UserID:           uint(user.UserId),
+		Action:           "vote_up",
+		EntityType:       "answer",
+		EntityID:         uint(answer.AnswerId),
+		ReputationChange: -10,
+		Description:      fmt.Sprintf("User gained 10 reputation for vote up on answer %d", answer.AnswerId),
+	}
+	database.SaveLog(&log)
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "answer voted up"})
 }
 
@@ -77,5 +87,16 @@ func VoteDownAnswer(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
 		return
 	}
+
+	log := models.Log{
+		UserID:           uint(user.UserId),
+		Action:           "vote_down",
+		EntityType:       "answer",
+		EntityID:         uint(answer.AnswerId),
+		ReputationChange: -10,
+		Description:      fmt.Sprintf("User lost 10 reputation for vote down on answer %d", answer.AnswerId),
+	}
+	database.SaveLog(&log)
+
 	c.IndentedJSON(http.StatusOK, gin.H{"message": "answer voted down"})
 }

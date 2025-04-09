@@ -30,7 +30,6 @@ func VoteDownQuestion(question *models.Question) error {
 		if err := tx.Model(&question).Update("votes", gorm.Expr("votes - ?", 1)).Error; err != nil {
 			return fmt.Errorf("failed to downvote: %w", err)
 		}
-
 		return nil
 	})
 	return err
