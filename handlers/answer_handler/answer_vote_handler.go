@@ -48,7 +48,7 @@ func VoteUpAnswer(c *gin.Context) {
 		Action:           "vote_up",
 		EntityType:       "answer",
 		EntityID:         uint(answer.AnswerId),
-		ReputationChange: -10,
+		ReputationChange: 10,
 		Description:      fmt.Sprintf("User gained 10 reputation for vote up on answer %d", answer.AnswerId),
 	}
 	database.SaveLog(&log)

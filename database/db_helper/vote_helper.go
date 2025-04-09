@@ -50,7 +50,6 @@ func VoteUpQuestion(question *models.Question) error {
 			return fmt.Errorf("failed to vote up: %w", err)
 		}
 
-		//todo log the action later
 		return nil
 	})
 	return err
@@ -71,7 +70,6 @@ func VoteUpAnswerWithOwner(answer *models.Answer) error {
 			return fmt.Errorf("failed to vote up: %w", err)
 		}
 
-		//todo log the action later
 		return nil
 	})
 	return err
@@ -99,6 +97,26 @@ func VoteDownAnswerWithOwner(answer *models.Answer) error {
 
 		if err := tx.Model(&answer).Update("votes", gorm.Expr("votes - ?", 1)).Error; err != nil {
 			return fmt.Errorf("failed to downvote: %w", err)
+		}
+
+		return nil
+	})
+	return err
+}
+
+func MarkAnswerAsCorrect(answer *models.Answer) error {
+	err := database.DB.Transaction(func(tx *gorm.DB) error {
+		var answerOwner models.User
+		if err := tx.First(&answer, answer.UserId).Error; err != nil {
+			return fmt.Errorf("failed to fetch answer owner: %w", err)
+		}
+
+		if err := tx.Model(&answerOwner).Update("reputation", gorm.Expr("reputation + ?", 10)).Error; err != nil {
+			return fmt.Errorf("failed to update reputation: %w", err)
+		}
+
+		if err := tx.Model(&answer).Update("is_correct_answer", gorm.Expr("is_correct_answer = ?", true)).Error; err != nil {
+			return fmt.Errorf("failed to mark as correct answer : %w", err)
 		}
 
 		return nil
