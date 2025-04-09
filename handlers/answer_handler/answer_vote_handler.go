@@ -4,9 +4,7 @@ import (
 	"Learning/database"
 	"Learning/helper"
 	"Learning/models"
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 )
@@ -38,61 +36,11 @@ func VoteUpAnswer(c *gin.Context) {
 		return
 	}
 
-	err := voteUpAnswerWithOwner(&answer)
+	err := database.VoteUpAnswerWithOwner(&answer)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
 		return
 	}
-}
-
-func voteUpAnswerWithOwner(answer *models.Answer) error {
-	err := database.DB.Transaction(func(tx *gorm.DB) error {
-		var answerOwner models.User
-		if err := tx.First(&answerOwner, answer.UserId).Error; err != nil {
-			return fmt.Errorf("failed to fetch answer owner: %w", err)
-		}
-
-		if err := tx.Model(&answerOwner).Update("reputation", gorm.Expr("reputation + ?", 10)).Error; err != nil {
-			return fmt.Errorf("failed to update reputation: %w", err)
-		}
-
-		if err := tx.Model(&answer).Update("votes", gorm.Expr("votes + ?", 1)).Error; err != nil {
-			return fmt.Errorf("failed to vote up: %w", err)
-		}
-
-		//todo log the action later
-		return nil
-	})
-	return err
-}
-
-func voteDownAnswerWithOwner(answer *models.Answer) error {
-	err := database.DB.Transaction(func(tx *gorm.DB) error {
-		var answerOwner models.User
-		if err := tx.First(&answerOwner, answer.UserId).Error; err != nil {
-			return fmt.Errorf("failed to fetch answer owner: %w", err)
-		}
-
-		if answerOwner.Reputation <= 0 {
-			return fmt.Errorf("answer owner cannot have negative reputation")
-		}
-
-		newReputation := answerOwner.Reputation - 10
-		if newReputation < 0 {
-			newReputation = 0
-		}
-
-		if err := tx.Model(&answerOwner).Update("reputation", newReputation).Error; err != nil {
-			return fmt.Errorf("failed to update reputation: %w", err)
-		}
-
-		if err := tx.Model(&answer).Update("votes", gorm.Expr("votes - ?", 1)).Error; err != nil {
-			return fmt.Errorf("failed to downvote: %w", err)
-		}
-
-		return nil
-	})
-	return err
 }
 
 // VoteDownAnswer
@@ -122,7 +70,7 @@ func VoteDownAnswer(c *gin.Context) {
 		return
 	}
 
-	err := voteDownAnswerWithOwner(&answer)
+	err := database.VoteDownAnswerWithOwner(&answer)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
 		return
