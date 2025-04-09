@@ -2,6 +2,7 @@ package answer_handler
 
 import (
 	"Learning/database"
+	"Learning/database/db_helper"
 	"Learning/helper"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
@@ -36,11 +37,12 @@ func VoteUpAnswer(c *gin.Context) {
 		return
 	}
 
-	err := database.VoteUpAnswerWithOwner(&answer)
+	err := db_helper.VoteUpAnswerWithOwner(&answer)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
 		return
 	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "answer voted up"})
 }
 
 // VoteDownAnswer
@@ -70,9 +72,10 @@ func VoteDownAnswer(c *gin.Context) {
 		return
 	}
 
-	err := database.VoteDownAnswerWithOwner(&answer)
+	err := db_helper.VoteDownAnswerWithOwner(&answer)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Transaction failed", "error": err.Error()})
 		return
 	}
+	c.IndentedJSON(http.StatusOK, gin.H{"message": "answer voted down"})
 }
