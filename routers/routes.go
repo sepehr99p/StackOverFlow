@@ -42,6 +42,9 @@ func SetupRouter() *gin.Engine {
 		//tag routes
 		protected.POST("/tag/add", handlers.AddTag)
 		protected.POST("/tag/questions/all", handlers.FetchTagQuestions)
+
+		//report routes
+		protected.POST("/report", handlers.ReportInteraction)
 	}
 
 	adminRoutes := router.Group("/admin")
