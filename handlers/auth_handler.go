@@ -3,6 +3,7 @@ package handlers
 import (
 	"Learning/database"
 	"Learning/models"
+	"Learning/public"
 	"Learning/token"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -21,7 +22,7 @@ func RegisterHandler(c *gin.Context) {
 	var userInput models.UserRegister
 	if err := c.ShouldBindJSON(&userInput); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"message": "Invalid JSON format", "error": err.Error(),
+			"message": public.InvalidJson, "error": err.Error(),
 		})
 		return
 	}
@@ -38,7 +39,7 @@ func RegisterHandler(c *gin.Context) {
 
 	tokenString, err := token.CreateToken(userInput.PhoneNumber)
 	if err != nil {
-		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": public.InvalidCredentials})
 		return
 	}
 
@@ -57,25 +58,25 @@ func LoginHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
 	var user models.UserRegister
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": public.InvalidJson})
 		return
 	}
 
 	dbUser := models.User{UserName: user.PhoneNumber, Password: user.Password}
 	if queryResult := database.DB.Find(&dbUser).Error; queryResult != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "user not found"})
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": public.UserNotFound})
 		return
 	}
 
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(dbUser.Password))
 	if err != nil {
-		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": public.InvalidCredentials})
 		return
 	}
 
 	tokenString, err := token.CreateToken(user.PhoneNumber)
 	if err != nil {
-		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid credentials"})
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": public.InvalidCredentials})
 		return
 	}
 
@@ -93,13 +94,13 @@ func LoginHandler(c *gin.Context) {
 func ProtectedHandler(c *gin.Context) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
-		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Missing authorization header"})
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": public.TokenNotFound})
 		return
 	}
 
 	const prefix = "Bearer "
 	if !strings.HasPrefix(tokenString, prefix) {
-		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": "Invalid authorization header format"})
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": public.InvalidToken})
 		return
 	}
 

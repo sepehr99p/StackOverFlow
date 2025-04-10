@@ -5,6 +5,7 @@ import (
 	"Learning/database/db_helper"
 	"Learning/helper"
 	"Learning/models"
+	"Learning/public"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -22,7 +23,7 @@ import (
 func DeleteAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": public.InvalidJson})
 		return
 	}
 
@@ -105,7 +106,7 @@ func CorrectAnswer(c *gin.Context) {
 func AddAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": public.InvalidJson})
 		return
 	}
 
