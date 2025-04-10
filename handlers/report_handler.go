@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"Learning/database"
+	"Learning/error"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -18,7 +19,7 @@ import (
 func ReportInteraction(c *gin.Context) {
 	var report models.Report
 	if err := c.ShouldBindJSON(&report); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid json format"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson})
 		return
 	}
 	if report.ReportType == "comment" {

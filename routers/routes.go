@@ -6,6 +6,8 @@ import (
 	"Learning/handlers/question_handler"
 	"Learning/middleware"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func SetupRouter() *gin.Engine {
@@ -56,6 +58,8 @@ func SetupRouter() *gin.Engine {
 		adminRoutes.POST("/user/add", handlers.AddUser)
 		adminRoutes.DELETE("/user/delete", handlers.DeleteUser)
 	}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.DefaultModelsExpandDepth(2)))
 
 	return router
 }

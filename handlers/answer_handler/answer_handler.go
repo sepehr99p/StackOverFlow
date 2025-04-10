@@ -3,6 +3,7 @@ package answer_handler
 import (
 	"Learning/database"
 	"Learning/database/db_helper"
+	"Learning/error"
 	"Learning/helper"
 	"Learning/models"
 	"fmt"
@@ -22,7 +23,7 @@ import (
 func DeleteAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson})
 		return
 	}
 
@@ -105,7 +106,7 @@ func CorrectAnswer(c *gin.Context) {
 func AddAnswer(c *gin.Context) {
 	var answer models.Answer
 	if err := c.ShouldBindJSON(&answer); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson})
 		return
 	}
 

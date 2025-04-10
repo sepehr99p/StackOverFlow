@@ -2,6 +2,7 @@ package question_handler
 
 import (
 	"Learning/database"
+	"Learning/error"
 	"Learning/helper"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
@@ -60,7 +61,7 @@ func FetchQuestions(c *gin.Context) {
 func DeleteQuestion(c *gin.Context) {
 	var question models.Question
 	if err := c.ShouldBindJSON(&question); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson, "error": err.Error()})
 		return
 	}
 
@@ -94,7 +95,7 @@ func DeleteQuestion(c *gin.Context) {
 func PostQuestion(c *gin.Context) {
 	var question models.Question
 	if err := c.ShouldBindJSON(&question); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson, "error": err.Error()})
 		return
 	}
 	if helper.FetchUserFromToken(c.GetHeader("Authorization")) == nil {

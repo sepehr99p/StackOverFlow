@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"Learning/database"
+	"Learning/error"
 	"Learning/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -19,7 +20,7 @@ import (
 func DeleteComment(c *gin.Context) {
 	var comment models.Comment
 	if err := c.ShouldBindJSON(&comment); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "invalid json format"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson})
 		return
 	}
 	if result := database.DB.Delete(&comment).Error; result != nil {
@@ -41,7 +42,7 @@ func AddComment(c *gin.Context) {
 	var comment models.Comment
 
 	if err := c.ShouldBindJSON(&comment); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson, "error": err.Error()})
 		return
 	}
 
