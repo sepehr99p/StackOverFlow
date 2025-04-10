@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"Learning/database"
+	"Learning/error"
 	"Learning/models"
-	"Learning/public"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,7 +42,7 @@ func AddUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": public.InvalidJson, "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson, "error": err.Error()})
 		return
 	}
 

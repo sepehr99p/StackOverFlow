@@ -1,4 +1,4 @@
-package public
+package error
 
 const InvalidJson = "Invalid JSON format"
 const InvalidCredentials = "Invalid credentials"

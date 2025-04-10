@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"Learning/database"
+	"Learning/error"
 	"Learning/models"
-	"Learning/public"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -19,7 +19,7 @@ import (
 func AddTag(c *gin.Context) {
 	var tag models.Tag
 	if err := c.ShouldBindJSON(&tag); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": public.InvalidJson, "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson, "error": err.Error()})
 		return
 	}
 
