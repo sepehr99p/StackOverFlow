@@ -454,7 +454,7 @@
                 }
             }
         },
-        "/api/questions/my/{id}": {
+        "/api/questions/voteDown/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -523,6 +523,82 @@
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/models.Question"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/questions/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Question"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/report": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "report",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Report"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Report"
                         }
                     }
                 }
@@ -611,7 +687,7 @@
                 "parameters": [
                     {
                         "description": "User object",
-                        "name": "answer",
+                        "name": "answer_handler",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -673,7 +749,7 @@
                 "parameters": [
                     {
                         "description": "User object",
-                        "name": "answer",
+                        "name": "answer_handler",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -736,7 +812,7 @@
                     "type": "integer"
                 },
                 "parent_type": {
-                    "description": "\"question\" or \"answer\"",
+                    "description": "\"question_handler\" or \"answer_handler\"",
                     "type": "string"
                 },
                 "user_id": {
@@ -771,6 +847,20 @@
                 },
                 "votes": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.Report": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "report_id": {
+                    "type": "string"
+                },
+                "report_type": {
+                    "type": "string"
                 }
             }
         },
