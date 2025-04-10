@@ -53,6 +53,15 @@ definitions:
       votes:
         type: integer
     type: object
+  models.Report:
+    properties:
+      description:
+        type: string
+      report_id:
+        type: string
+      report_type:
+        type: string
+    type: object
   models.Tag:
     properties:
       name:
@@ -139,7 +148,7 @@ paths:
         type: string
       - description: Answer object
         in: body
-        name: answer_handler
+        name: answer
         required: true
         schema:
           $ref: '#/definitions/models.Answer'
@@ -151,7 +160,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer_handler
+      - answer
   /api/answer/correctAnswer/{id}:
     get:
       consumes:
@@ -170,7 +179,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer_handler
+      - answer
   /api/answer/delete:
     delete:
       consumes:
@@ -189,7 +198,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer_handler
+      - answer
   /api/answer/voteDown/{id}:
     get:
       consumes:
@@ -213,7 +222,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer_handler
+      - answer
   /api/answer/voteUp/{id}:
     get:
       consumes:
@@ -237,7 +246,7 @@ paths:
           schema:
             $ref: '#/definitions/models.Answer'
       tags:
-      - answer_handler
+      - answer
   /api/comment/add:
     post:
       consumes:
@@ -288,6 +297,30 @@ paths:
             $ref: '#/definitions/models.Comment'
       tags:
       - comment
+  /api/questions/{id}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Question'
+      tags:
+      - questions
   /api/questions/add:
     post:
       consumes:
@@ -300,7 +333,7 @@ paths:
         type: string
       - description: Question Data
         in: body
-        name: question_handler
+        name: question
         required: true
         schema:
           $ref: '#/definitions/models.Question'
@@ -342,7 +375,7 @@ paths:
         type: string
       - description: Question object
         in: body
-        name: question_handler
+        name: question
         required: true
         schema:
           $ref: '#/definitions/models.Question'
@@ -374,7 +407,7 @@ paths:
             $ref: '#/definitions/models.Question'
       tags:
       - questions
-  /api/questions/my/{id}:
+  /api/questions/voteDown/{id}:
     get:
       consumes:
       - application/json
@@ -422,6 +455,31 @@ paths:
             $ref: '#/definitions/models.Question'
       tags:
       - questions
+  /api/report:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer Token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Report object
+        in: body
+        name: report
+        required: true
+        schema:
+          $ref: '#/definitions/models.Report'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Report'
+      tags:
+      - report
   /api/tag/add:
     post:
       consumes:

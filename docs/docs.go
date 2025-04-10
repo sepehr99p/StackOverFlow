@@ -79,7 +79,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer_handler/add": {
+        "/api/answer/add": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -88,7 +88,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer_handler"
+                    "answer"
                 ],
                 "parameters": [
                     {
@@ -100,7 +100,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "Answer object",
-                        "name": "answer_handler",
+                        "name": "answer",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -118,7 +118,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer_handler/correctAnswer/{id}": {
+        "/api/answer/correctAnswer/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -127,7 +127,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer_handler"
+                    "answer"
                 ],
                 "parameters": [
                     {
@@ -148,7 +148,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer_handler/delete": {
+        "/api/answer/delete": {
             "delete": {
                 "consumes": [
                     "application/json"
@@ -157,7 +157,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer_handler"
+                    "answer"
                 ],
                 "parameters": [
                     {
@@ -178,7 +178,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer_handler/voteDown/{id}": {
+        "/api/answer/voteDown/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -187,7 +187,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer_handler"
+                    "answer"
                 ],
                 "parameters": [
                     {
@@ -215,7 +215,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/answer_handler/voteUp/{id}": {
+        "/api/answer/voteUp/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -224,7 +224,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "answer_handler"
+                    "answer"
                 ],
                 "parameters": [
                     {
@@ -351,7 +351,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "Question Data",
-                        "name": "question_handler",
+                        "name": "question",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -417,7 +417,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "Question object",
-                        "name": "question_handler",
+                        "name": "question",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -465,7 +465,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/questions/my/{id}": {
+        "/api/questions/voteDown/{id}": {
             "get": {
                 "consumes": [
                     "application/json"
@@ -534,6 +534,82 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/models.Question"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/questions/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "questions"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Question"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/report": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "report"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer Token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Report object",
+                        "name": "report",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Report"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Report"
                         }
                     }
                 }
@@ -782,6 +858,20 @@ const docTemplate = `{
                 },
                 "votes": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.Report": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "report_id": {
+                    "type": "string"
+                },
+                "report_type": {
+                    "type": "string"
                 }
             }
         },
