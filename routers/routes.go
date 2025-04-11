@@ -5,6 +5,7 @@ import (
 	"Learning/handlers/answer_handler"
 	"Learning/handlers/question_handler"
 	"Learning/middleware"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -27,15 +28,15 @@ func SetupRouter() *gin.Engine {
 		protected.GET("/questions/all", question_handler.FetchQuestions)
 		protected.POST("/questions/add", question_handler.PostQuestion)
 		protected.GET("/questions/my", question_handler.FetchMyQuestions)
-		protected.GET("/questions/voteUp/:id}", question_handler.VoteUpQuestion)
-		protected.GET("/questions/voteDown/:id}", question_handler.VoteDownQuestion)
+		protected.GET("/questions/voteUp/:id", question_handler.VoteUpQuestion)
+		protected.GET("/questions/voteDown/:id", question_handler.VoteDownQuestion)
 
 		// Answer routes
 		protected.POST("/answer_handler/add", answer_handler.AddAnswer)
 		protected.GET("/answer_handler/correctAnswer/:id", answer_handler.CorrectAnswer)
-		protected.GET("/answer_handler/voteUp/:id}", answer_handler.VoteUpAnswer)
-		protected.GET("/answer_handler/voteDown/:id}", answer_handler.VoteDownAnswer)
-		protected.GET("/answer_handler/delete", answer_handler.DeleteAnswer)
+		protected.GET("/answer_handler/voteUp/:id", answer_handler.VoteUpAnswer)
+		protected.GET("/answer_handler/voteDown/:id", answer_handler.VoteDownAnswer)
+		protected.DELETE("/answer_handler/delete", answer_handler.DeleteAnswer)
 
 		//comment routes
 		protected.POST("/comment/add", handlers.AddComment)
