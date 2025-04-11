@@ -30,6 +30,7 @@ func SetupRouter() *gin.Engine {
 		protected.GET("/questions/my", question_handler.FetchMyQuestions)
 		protected.GET("/questions/voteUp/:id", question_handler.VoteUpQuestion)
 		protected.GET("/questions/voteDown/:id", question_handler.VoteDownQuestion)
+		protected.GET("/questions/search", question_handler.SearchQuestions)
 
 		// Answer routes
 		protected.POST("/answer_handler/add", answer_handler.AddAnswer)
