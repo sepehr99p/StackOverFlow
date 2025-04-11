@@ -4,9 +4,10 @@ import (
 	"Learning/database"
 	"Learning/error"
 	"Learning/models"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"regexp"
+
+	"github.com/gin-gonic/gin"
 )
 
 // DeleteComment
@@ -75,7 +76,7 @@ func AddComment(c *gin.Context) {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "error checking description"})
 		return
 	}
-	if matchString == true {
+	if matchString {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Description containing bad characters"})
 		return
 	}

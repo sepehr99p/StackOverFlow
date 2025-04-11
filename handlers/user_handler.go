@@ -19,13 +19,13 @@ import (
 func AddUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid JSON format", "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson})
 		return
 	}
 
 	result := database.DB.Create(&user)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating user", "error": result.Error.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error creating user"})
 		return
 	}
 
@@ -42,13 +42,13 @@ func AddUser(c *gin.Context) {
 func DeleteUser(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson, "error": err.Error()})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": error.InvalidJson})
 		return
 	}
 
 	result := database.DB.Delete(&user)
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting user", "error": result.Error.Error()})
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Error deleting user"})
 		return
 	}
 	c.IndentedJSON(http.StatusAccepted, user)

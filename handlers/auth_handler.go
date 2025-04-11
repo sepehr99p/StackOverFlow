@@ -5,10 +5,11 @@ import (
 	"Learning/error"
 	"Learning/models"
 	"Learning/token"
-	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // RegisterHandler
@@ -81,7 +82,6 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, tokenString)
-	return
 }
 
 // ProtectedHandler
