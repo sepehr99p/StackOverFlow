@@ -3,6 +3,8 @@ package question_handler
 import (
 	"Learning/database"
 	"Learning/models"
+	"context"
+	"encoding/json"
 	"net/http"
 	"strconv"
 	"strings"
@@ -40,10 +42,22 @@ func SearchQuestions(c *gin.Context) {
 		limit = 10
 	}
 
+	cacheKey := "search:" + query + ":page:" + pageStr + ":limit:" + limitStr
+
+	ctx := context.Background()
+	cachedResult, err := database.GetCachedQuestion(ctx, cacheKey)
+	if err == nil {
+		var questions []models.Question
+		if err := json.Unmarshal([]byte(cachedResult), &questions); err == nil {
+			c.JSON(http.StatusOK, questions)
+			return
+		}
+	}
+
 	words := strings.Fields(query)
 	var searchTerms []string
 	for _, word := range words {
-		if len(word) > 2 { // Ignore very short words
+		if len(word) > 2 {
 			searchTerms = append(searchTerms, "%"+word+"%")
 		}
 	}
@@ -66,6 +80,10 @@ func SearchQuestions(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to search questions"})
 		return
+	}
+
+	if jsonData, err := json.Marshal(questions); err == nil {
+		database.CacheQuestion(ctx, cacheKey, string(jsonData))
 	}
 
 	c.JSON(http.StatusOK, questions)

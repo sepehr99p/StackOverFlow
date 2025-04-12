@@ -11,6 +11,7 @@ func main() {
 	ready := make(chan bool)
 	go func() {
 		database.ConnectDatabase()
+		database.ConnectRedis()
 		ready <- true
 	}()
 	<-ready
