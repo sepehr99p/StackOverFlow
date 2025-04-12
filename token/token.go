@@ -1,10 +1,13 @@
 package token
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"strings"
 	"time"
+
+	"Learning/database"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -41,22 +44,59 @@ func CreateToken(username string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	// Cache the token
+	ctx := context.Background()
+	cacheKey := "token:" + username
+	if err := database.CacheUserToken(ctx, cacheKey, tokenString); err != nil {
+		return "", fmt.Errorf("failed to cache token: %v", err)
+	}
+
 	return tokenString, nil
 }
 
 func VerifyToken(tokenString string) error {
-	token, _, err := jwt.NewParser().ParseUnverified(tokenString, jwt.MapClaims{})
-	if err != nil {
-		return fmt.Errorf("invalid token structure: %v", err)
-	}
-	token, err = jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	// Check cache first
+	ctx := context.Background()
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
+
 	if err != nil {
 		return err
 	}
+
 	if !token.Valid {
 		return fmt.Errorf("invalid token")
 	}
+
+	// Get username from token
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return fmt.Errorf("invalid token claims")
+	}
+
+	username, ok := claims["username"].(string)
+	if !ok {
+		return fmt.Errorf("invalid username in token")
+	}
+
+	// Verify token is in cache
+	cacheKey := "token:" + username
+	cachedToken, err := database.GetCachedUserToken(ctx, cacheKey)
+	if err != nil {
+		return fmt.Errorf("token not found in cache")
+	}
+
+	if cachedToken != tokenString {
+		return fmt.Errorf("token mismatch")
+	}
+
 	return nil
+}
+
+func InvalidateToken(username string) error {
+	ctx := context.Background()
+	cacheKey := "token:" + username
+	return database.DeleteCachedToken(ctx, cacheKey)
 }
