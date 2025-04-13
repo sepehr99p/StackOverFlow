@@ -27,7 +27,6 @@ func JWTAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Token is valid, continue to the handler
 		c.Next()
 	}
 }

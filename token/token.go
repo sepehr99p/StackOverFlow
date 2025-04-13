@@ -45,7 +45,6 @@ func CreateToken(username string) (string, error) {
 		return "", err
 	}
 
-	// Cache the token
 	ctx := context.Background()
 	cacheKey := "token:" + username
 	if err := database.CacheUserToken(ctx, cacheKey, tokenString); err != nil {
@@ -56,7 +55,6 @@ func CreateToken(username string) (string, error) {
 }
 
 func VerifyToken(tokenString string) error {
-	// Check cache first
 	ctx := context.Background()
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
@@ -70,7 +68,6 @@ func VerifyToken(tokenString string) error {
 		return fmt.Errorf("invalid token")
 	}
 
-	// Get username from token
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return fmt.Errorf("invalid token claims")
@@ -81,7 +78,6 @@ func VerifyToken(tokenString string) error {
 		return fmt.Errorf("invalid username in token")
 	}
 
-	// Verify token is in cache
 	cacheKey := "token:" + username
 	cachedToken, err := database.GetCachedUserToken(ctx, cacheKey)
 	if err != nil {
