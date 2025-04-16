@@ -1,21 +1,23 @@
 package middleware
 
 import (
-	"Learning/database"
-	"Learning/models"
+	error2 "Learning/error"
+	"Learning/helper"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 func AdminMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		userID, _ := strconv.Atoi(c.GetHeader("User-ID")) // user id should be in header for this to work
+		tokenString := c.GetHeader("Authorization")
+		if tokenString == "" {
+			c.IndentedJSON(http.StatusUnauthorized, gin.H{"message": error2.TokenNotFound})
+			return
+		}
 
-		var user models.User
-		if err := database.DB.First(&user, userID).Error; err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"message": "User not found"})
-			c.Abort()
+		user := helper.FetchUserFromToken(c.GetHeader("Authorization"))
+		if user == nil {
+			c.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "failed to fetch user data"})
 			return
 		}
 
