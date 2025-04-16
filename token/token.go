@@ -14,7 +14,6 @@ import (
 
 var secretKey = []byte(os.Getenv("JWT_SECRET"))
 
-// ExtractTokenFromHeader securely extracts the token from the Authorization header
 func ExtractTokenFromHeader(authHeader string) (string, error) {
 	const prefix = "Bearer "
 	if len(authHeader) < len(prefix) {
