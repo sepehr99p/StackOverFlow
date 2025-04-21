@@ -5,7 +5,7 @@ A RESTful API for a Stack Overflow clone built with Go, Gin, and GORM.
 ## Features
 
 - User authentication and authorization
-- Question and answer management
+- Question and answer and comment management
 - Tag system
 - Voting system
 - Redis caching
